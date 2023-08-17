@@ -1,17 +1,17 @@
 //
-//  BarView.swift
+//  BarViewNeg.swift
 //  ios-app2
 //
-//  Created by Luka Baylis on 2023-08-07.
+//  Created by Luka Baylis on 2023-08-17.
 //
 
 import SwiftUI
 
-struct BarView: View {
+struct BarViewNeg: View {
+    
     var colour: Color
-    var date: Date
     var value: Double
-    var proxy: GeometryProxy
+    var proxy: CGFloat
     var highestVal: Double
     var total: Int
     
@@ -29,7 +29,7 @@ struct BarView: View {
                 VStack {
                     Spacer()
                     
-                    Text("$\(value, specifier: "%.0f")")
+                    Text("-$\(-value, specifier: "%.0f")")
                         .foregroundStyle(.black)
                         .font(.callout)
                         .bold()
@@ -38,16 +38,6 @@ struct BarView: View {
                         .foregroundStyle(colour.gradient)
                         .frame(height: barHeight)
                         .cornerRadius(radius: 5, corners: [.topLeft, .topRight])
-                    
-                    Text(date, format: .dateTime.day().month())
-                        .foregroundStyle(.black)
-                        .font(.callout)
-                        .fontWeight(.bold)
-                    
-                    Text(date, format: .dateTime.hour().minute())
-                        .foregroundStyle(.black)
-                        .font(.callout)
-                        .fontWeight(.bold)
                 }
                 
             } else {
@@ -55,16 +45,18 @@ struct BarView: View {
             }
         }
         .task {
-            if value == highestVal {
-                barHeight = (proxy.size.height / 3)
+            if -value == -highestVal {
+                barHeight = (proxy / 3)
             } else {
-                barHeightPercent = (value / highestVal)
-                barHeight = (barHeightPercent * (proxy.size.height / 3))
+                barHeightPercent = (-value / -highestVal)
+                barHeight = (barHeightPercent * (proxy / 3))
             }
             
             show = true
         }
     }
+
+
 }
 
 #Preview {

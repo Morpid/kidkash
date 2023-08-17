@@ -132,11 +132,15 @@ struct RegisterView: View {
                 if isLoading {
                     ProgressView()
                 } else {
-                    Image(systemName: "arrow.forward")
-                        .foregroundStyle(.green)
-                        .bold()
-                        .padding(.horizontal, 50)
-                        .border(1, .black)
+                    
+                    HStack {
+                        Text("Next")
+                            .foregroundStyle(.black)
+                        
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(.black)
+                    }
+                    .border(1, .black)
                 }
             }
             

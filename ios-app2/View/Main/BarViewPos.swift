@@ -1,17 +1,17 @@
 //
-//  BarView.swift
+//  BarViewPos.swift
 //  ios-app2
 //
-//  Created by Luka Baylis on 2023-08-07.
+//  Created by Luka Baylis on 2023-08-17.
 //
 
 import SwiftUI
 
-struct BarView: View {
+struct BarViewPos: View {
+    
     var colour: Color
-    var date: Date
     var value: Double
-    var proxy: GeometryProxy
+    var proxy: CGFloat
     var highestVal: Double
     var total: Int
     
@@ -38,16 +38,6 @@ struct BarView: View {
                         .foregroundStyle(colour.gradient)
                         .frame(height: barHeight)
                         .cornerRadius(radius: 5, corners: [.topLeft, .topRight])
-                    
-                    Text(date, format: .dateTime.day().month())
-                        .foregroundStyle(.black)
-                        .font(.callout)
-                        .fontWeight(.bold)
-                    
-                    Text(date, format: .dateTime.hour().minute())
-                        .foregroundStyle(.black)
-                        .font(.callout)
-                        .fontWeight(.bold)
                 }
                 
             } else {
@@ -56,15 +46,16 @@ struct BarView: View {
         }
         .task {
             if value == highestVal {
-                barHeight = (proxy.size.height / 3)
+                barHeight = (proxy / 3)
             } else {
                 barHeightPercent = (value / highestVal)
-                barHeight = (barHeightPercent * (proxy.size.height / 3))
+                barHeight = (barHeightPercent * (proxy / 3))
             }
             
             show = true
         }
     }
+
 }
 
 #Preview {
