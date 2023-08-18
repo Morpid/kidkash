@@ -14,29 +14,14 @@ import FirebaseFirestoreSwift
 import SDWebImageSwiftUI
 import PhotosUI
 
+
 struct BankDetailsChild: View {
-    
-    @Namespace var trailingID
-    
-    @State var AllBanksNames: [String] = []
-    
-    @State var DoubleDigit: String = ""
     
     @State var bank: Bank
     
-    @State var showNeg: Bool = false
-    
-    @State var elapsed: Int = 0
-    
-    @State var positive_NEG_ARRAY: [Double] = []
-    
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
-    @State var refreshChart: Bool = false
-    
     @State var bankHistoryAmount: [Double] = []
-    
-    @State var TransactionInfo: [BankTransactionInfo] = []
     
     @State var bankArray: Int
     @State var usernameChild: String
@@ -51,277 +36,241 @@ struct BankDetailsChild: View {
     
     @State var isDoneLoadingArrays: Bool = false
     
+    @State var newAmount: Double = 0.00
+    
+    @State var AddTextFieldFirstDigit: String = ""
+    @State var AddTextFieldSecondDigit: String = ""
+    
+    @State var SubtractTextFieldFirstDigit: String = ""
+    @State var SubtractTextFieldSecondDigit: String = ""
+    
     
     var body: some View {
         GeometryReader { proxy in
-            
-            ScrollView {
-                
-                Text("$\(bank.amount, specifier: "%.2f")")
-                    .font(.title)
-                
-                
-                if bank.amountHistoryAmount.count >= 2 {
-                    VStack(alignment: .leading) {
-                            
-                        Text("Amount History")
-                            .font(.title)
-                            .fontWeight(.heavy)
-                            .frame(alignment: .leading)
-                            
-                        ScrollViewReader { value in
-                            ScrollView(.horizontal) {
-                                HStack {
-                                    ForEach(Array(bank.amountHistoryAmount.enumerated()), id: \.offset) { i, val in
-                                        BarView(colour: .mint, date: bank.amountHistoryDate[i], value: bank.amountHistoryAmount[i], proxy: proxy, highestVal: bank.amountHistoryAmount.max() ?? 0, total: bank.amountHistoryAmount.count)
-                                            .frame(width: proxy.size.width / 5)
-                                    }
-                                    
-                                    
-                                    Text("")
-                                        .id(trailingID)
-                                    
-                                }
-                                .task {
-                                    withAnimation {
-                                        value.scrollTo(trailingID)
-                                    }
-                                }
-                            }
-                            .scrollIndicators(.hidden)
-                            
-                            
-                        }
-                        
-                        
-                    }
-                    .padding()
-                    .task {
-                        if bank.transactionHistoryAmount != [] {
-                            Task {
-                                await loadArrays()
-                            }
-                        }
-                        
-                    }
+            NavigationStack {
+                ScrollView {
                     
-                }
-                
-                
-                
-                if bank.transactionHistoryAmount.count > 0 {
+                    Text("$\(bank.amount, specifier: "%.2f")")
+                        .font(.title)
                     
                     
-                    VStack {
-                        if bank.transactionHistoryAmount.count >= 2 {
+                    
+                    if bank.amountHistoryAmount.count >= 2 {
+                        VStack(alignment: .leading) {
                             
-                            if posArray.count >= 2 {
-                                VStack(alignment: .leading) {
-                                    Text("Add History")
-                                        .font(.callout)
-                                        .opacity(0.75)
-                                        .frame(alignment: .leading)
-                                    
-                                    Text("Past 10")
-                                        .font(.caption)
-                                        .opacity(0.5)
-                                        .frame(alignment: .leading)
-                                    
-                                    //if posArray.count > 10 {
-                                        
-                                    ScrollViewReader { value in
-                                        ScrollView(.horizontal) {
-                                            HStack {
-                                                ForEach(Array(posArray.enumerated()), id: \.offset) { i, val in
-                                                    BarViewPos(colour: .green, value: posArray[i], proxy: (proxy.size.height / 1.5), highestVal: posArray.max() ?? 0, total: posArray.count)
-                                                        .frame(width: proxy.size.width / 5)
-                                                    
-                                                }
-                                                
-                                                
-                                                Text("")
-                                                    .id(trailingID)
-                                                
-                                            }
-                                            .task {
-                                                withAnimation {
-                                                    value.scrollTo(trailingID)
-                                                }
-                                            }
-                                        }
-                                        .scrollIndicators(.hidden)
-                                        
-                                        
-                                    }
-                                           
-                                    
-                                }
-                                .padding()
-                                .onAppear {
-                                    
-                                    if !bank.transactionHistoryAmount.isEmpty {
-                                        
-                                        Task {
-                                            await loadArrays()
-                                        }
+                            Text("Amount History")
+                                .font(.title)
+                                .fontWeight(.heavy)
+                                .frame(alignment: .leading)
+                            
+                            Text("Past 10 Changes")
+                                .font(.callout)
+                                .opacity(0.75)
+                                .frame(alignment: .leading)
+                            
+                            if bank.amountHistoryAmount.count > 10 {
+                                Chart {
+                                    ForEach(Array(bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 11)...(bank.amountHistoryAmount.count - 1)].enumerated()), id: \.offset) { index, value in
+                                        LineMark(
+                                            x: .value("Index", index),
+                                            y: .value("Value", value)
+                                        )
+                                        .foregroundStyle(.mint.gradient)
                                         
                                     }
                                 }
-                                .task {
-                                    if bank.transactionHistoryAmount != [] {
-                                        Task {
-                                            await loadArrays()
-                                        }
-                                    }
-                                    
-                                }
+                                .frame(height: proxy.size.height / 3)
                                 
+                            } else {
+                                Chart {
+                                    ForEach(Array(bank.amountHistoryAmount.enumerated()), id: \.offset) { index, value in
+                                        LineMark(
+                                            x: .value("Index", index),
+                                            y: .value("Value", value)
+                                        )
+                                        .foregroundStyle(.mint.gradient)
+                                        
+                                    }
+                                }
+                                .frame(height: proxy.size.height / 3)
                             }
                             
                             
-                            if negArray.count >= 2 {
-                                VStack(alignment: .leading) {
+                            
+                            
+                        }
+                        .padding()
+                        .task {
+                            if bank.transactionHistoryAmount != [] {
+                                loadArrays()
+                            }
+                            
+                        }
+                    }
+                    
+                    
+                    if bank.transactionHistoryAmount.count >= 2 {
+                        
+                        if posArray.count >= 2 {
+                            VStack(alignment: .leading) {
+                                
+                                Text("Add History")
+                                    .font(.title)
+                                    .fontWeight(.heavy)
+                                    .frame(alignment: .leading)
+                                
+                                Text("Past 10 Changes")
+                                    .font(.callout)
+                                    .opacity(0.75)
+                                    .frame(alignment: .leading)
+                                
+                                if posArray.count > 10 {
                                     
-                                    if showNeg {
-                                        Text("Subtract History")
-                                            .font(.callout)
-                                            .opacity(0.75)
-                                            .frame(alignment: .leading)
-                                        
-                                        Text("Past 10")
-                                            .font(.caption)
-                                            .opacity(0.5)
-                                            .frame(alignment: .leading)
-                                        
-                                        //                                        if negArray.count > 10 {
-                                        
-                                        
-                                        ScrollViewReader { value in
-                                            ScrollView(.horizontal) {
-                                                HStack {
-                                                    ForEach(Array(negArray.enumerated()), id: \.offset) { i, val in
-                                                        //                                                        BarView(colour: .red, date: bank.transactionHistoryDate[i], value: -negArray[i], proxy: proxy, highestVal: 1000 , total: negArray.count)
-                                                        //                                                            .frame(width: proxy.size.width / 5)
-                                                        
-                                                        BarViewNeg(colour: .red, value: negArray[i], proxy: (proxy.size.height / 1.5), highestVal: -positive_NEG_ARRAY.max()!, total: negArray.count)
-                                                            .frame(width: proxy.size.width / 5)
-                                                        
-                                                    }
-                                                    
-                                                    
-                                                    Text("")
-                                                        .id(trailingID)
-                                                    
-                                                }
-                                                .task {
-                                                    withAnimation {
-                                                        value.scrollTo(trailingID)
-                                                    }
-                                                }
-                                            }
-                                            .scrollIndicators(.hidden)
-                                            
+                                    
+                                    Chart {
+                                        ForEach(Array(posArray[(posArray.count - 11)...(posArray.count - 1)].enumerated()), id: \.offset) { index, value in
+                                            BarMark(
+                                                x: .value("Index", index),
+                                                y: .value("Value", value)
+                                            )
+                                            .foregroundStyle(.green.gradient)
+                                            .interpolationMethod(.catmullRom)
                                             
                                         }
-                                        
                                     }
+                                    .frame(height: proxy.size.height / 4)
+                                    .chartXAxis(.hidden)
                                     
-                                }
-                                .padding()
-                                .task {
-                                    var newarraytemp: [Double] = []
-                                    
-                                    for i in 0...(negArray.count - 1) {
-                                        newarraytemp.append(-negArray[i])
+                                } else {
+                                    Chart {
+                                        ForEach(Array(posArray.enumerated()), id: \.offset) { index, value in
+                                            BarMark(
+                                                x: .value("Index", index),
+                                                y: .value("Value", value)
+                                            )
+                                            .foregroundStyle(.green.gradient)
+                                            .interpolationMethod(.catmullRom)
+                                            
+                                        }
                                     }
-                                    
-                                    await MainActor.run {
-                                        positive_NEG_ARRAY = newarraytemp
-                                    }
-                                    
-                                    showNeg = true
-                                    
+                                    .frame(height: proxy.size.height / 4)
+                                    .chartXAxis(.hidden)
                                 }
                                 
+                                
+                            }
+                            .padding()
+                            .onReceive(timer) { input in
+                                
+                                if !bank.transactionHistoryAmount.isEmpty {
+                                    
+                                    loadArrays()
+                                    
+                                }
                             }
                             
                         }
-                    }
-                    
-                    Divider()
-                    
-                    if !TransactionInfo.isEmpty {
                         
-                        ForEach(TransactionInfo, id: \.self) { info in
-                            VStack {
-                                HStack {
-                                    Text(info.name)
-                                        .bold()
-                                    
-                                    Spacer()
-                                    
-                                    Text(info.date, format: .dateTime.day().month().year().hour().minute())
-                                        .opacity(0.75)
-                                    
-                                    Text(String(info.amount))
-                                        .bold()
-                                }
-                                .padding()
+                        Divider()
+                        
+                        if negArray.count >= 2 {
+                            VStack(alignment: .leading) {
                                 
-                                Divider()
+                                Text("Subtract History")
+                                    .font(.title)
+                                    .fontWeight(.heavy)
+                                    .frame(alignment: .leading)
+                                
+                                Text("Past 10 Changes")
+                                    .font(.callout)
+                                    .opacity(0.75)
+                                    .frame(alignment: .leading)
+                                
+                                if negArray.count > 10 {
+                                    
+                                    
+                                    Chart {
+                                        ForEach(Array(negArray[(negArray.count - 11)...(negArray.count - 1)].enumerated()), id: \.offset) { index, value in
+                                            BarMark(
+                                                x: .value("Index", index),
+                                                y: .value("Value", value)
+                                            )
+                                            .foregroundStyle(.red.gradient)
+                                            
+                                        }
+                                    }
+                                    .frame(height: proxy.size.height / 4)
+                                    .chartXAxis(.hidden)
+                                    
+                                } else {
+                                    Chart {
+                                        ForEach(Array(negArray.enumerated()), id: \.offset) { index, value in
+                                            BarMark(
+                                                x: .value("Index", index),
+                                                y: .value("Value", value)
+                                            )
+                                            .foregroundStyle(.red.gradient)
+                                            
+                                        }
+                                    }
+                                    .frame(height: proxy.size.height / 4)
+                                    .chartXAxis(.hidden)
+                                    
+                                }
+                                
+                                
+                            }
+                            .padding()
+                            .onReceive(timer) { input in
+                                
+                                if !bank.transactionHistoryAmount.isEmpty {
+                                    
+                                    loadArrays()
+                                    
+                                }
                             }
                         }
                         
                     }
                     
                     
-                }
-                
-            }
-            .frame(maxWidth: .infinity)
-            .navigationTitle(bank.name)
-            .background(.black.opacity(0.05))
-            .refreshable {
-                
-                Task {
-                    await updateFirebaseBank()
                     
-                    await loadArrays()
-                }
-                
-            }
-            .onAppear {
-                Task {
-                    await updateFirebaseBank()
                     
-                    await loadArrays()
+                    
+                    
                 }
-                
+                .frame(maxWidth: .infinity)
+                .navigationTitle(bank.name)
+                .background(.black.opacity(0.05))
+                .onReceive(timer) { input in
+                    
+                    Task {
+                        await updateFirebaseBank()
+                    }
+                    
+                    loadArrays()
+                }
             }
             
         }
         .overlay {
             LoadingView(show: $isLoading)
         }
-        .preferredColorScheme(.light)
-    
     }
     
-    func loadArrays() async {
+    func loadArrays() {
         
         Task {
-            
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
             
             var tempNegArray: [Double] = []
             var tempPosArray: [Double] = []
             
-            if user.banks[bankArray].transactionHistoryAmount.count > 0 {
-                for i in 0...(user.banks[bankArray].transactionHistoryAmount.count - 1) {
-                    if user.banks[bankArray].transactionHistoryAmount[i].sign == .minus {
-                        tempNegArray.append(user.banks[bankArray].transactionHistoryAmount[i])
+            if bank.transactionHistoryAmount.count > 0 {
+                for i in 0...(bank.transactionHistoryAmount.count - 1) {
+                    if bank.transactionHistoryAmount[i].sign == .minus {
+                        tempNegArray.append(bank.transactionHistoryAmount[i])
                     } else {
-                        tempPosArray.append(user.banks[bankArray].transactionHistoryAmount[i])
+                        tempPosArray.append(bank.transactionHistoryAmount[i])
                     }
                 }
                 
@@ -345,18 +294,7 @@ struct BankDetailsChild: View {
         isDoneLoadingArrays = true
     }
     
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        UserDefaults.standard.set(Date(), forKey: "LastOpened")
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        guard let lastOpened = UserDefaults.standard.object(forKey: "LastOpened") as? Date else { return }
-        
-        let elapsed = Calendar.current.dateComponents([.second], from: lastOpened, to: Date())
-        
-        self.elapsed = elapsed.second!
-    }
+
     
     func updateFirebaseBank() async {
         
@@ -364,30 +302,8 @@ struct BankDetailsChild: View {
         Task {
             var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
             
-            var tempTransactionInfo: [BankTransactionInfo] = []
-            
-            let count = user.banks[bankArray].transactionHistoryAmount.count
-            
-            if !user.banks[bankArray].transactionHistoryAmount.isEmpty {
-                
-                let nameReverse: [String] = user.banks[bankArray].transactionHistoryName.reversed()
-                let amountReverse: [Double] = user.banks[bankArray].transactionHistoryAmount.reversed()
-                let dateReverse: [Date] = user.banks[bankArray].transactionHistoryDate.reversed()
-                
-                for i in 0...(nameReverse.count - 1) {
-                    tempTransactionInfo.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i]))
-                }
-                
-            }
-
-            await MainActor.run { [user, tempTransactionInfo] in
-                withAnimation {
-                    bank = user.banks[bankArray]
-                    
-                    if tempTransactionInfo != TransactionInfo {
-                        TransactionInfo = tempTransactionInfo
-                    }
-                }
+            withAnimation {
+                bank = user.banks[bankArray]
             }
               
         }
