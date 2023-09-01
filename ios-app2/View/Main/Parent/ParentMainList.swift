@@ -81,6 +81,7 @@ struct ParentMainList: View {
                 
             }
         }
+        .background(.black.gradient.opacity(0.25))
     }
 }
 

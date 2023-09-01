@@ -102,16 +102,14 @@ struct ParentMain: View {
                     } label: {
                         HStack {
                             Image(systemName: "iphone.and.arrow.forward")
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.red)
                                 .font(.title2)
                             
                             Text("Sign Out")
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.red)
                                 
                         }
                         .padding()
-                        .background(.orange.opacity(0.6))
-                        .clipShape(Capsule())
                     }
                     
                     Spacer()
@@ -121,9 +119,6 @@ struct ParentMain: View {
                     } label: {
                         HStack {
                             
-                            Text("New User")
-                                .foregroundStyle(.black)
-                            
                             Image(systemName: "plus")
                                 .foregroundStyle(.black)
                                 .font(.title2)
@@ -131,8 +126,8 @@ struct ParentMain: View {
                             
                         }
                         .padding()
-                        .background(.blue.opacity(0.6))
-                        .clipShape(Capsule())
+                        .background(.green.opacity(0.6))
+                        .clipShape(Circle())
                     }
 
                     

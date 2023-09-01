@@ -27,6 +27,12 @@ struct CornerRadiusStyle: ViewModifier {
     }
 }
 
+extension String {
+    func containsWhitespaceAndNewlines() -> Bool {
+        return rangeOfCharacter(from: .whitespacesAndNewlines) != nil
+    }
+}
+
 extension View {
     
     func cornerRadius(radius: CGFloat, corners: UIRectCorner) -> some View {

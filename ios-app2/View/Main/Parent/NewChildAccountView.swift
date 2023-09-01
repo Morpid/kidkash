@@ -20,6 +20,8 @@ struct NewChildAccountView: View {
     
     @State var myProfile: User?
     
+    @State var showWhitespaceAlert: Bool = false
+    
     @State var ShouldProceedWithAccountCreation: Bool = true
 
     @State var showImagePicker: Bool = false
@@ -48,7 +50,7 @@ struct NewChildAccountView: View {
                 Text("Create Child User")
                     .font(.title)
 
-                HStack {
+                ZStack {
 
                     ZStack {
                         if let ChildProfileImageData, let image = UIImage(data: ChildProfileImageData) {
@@ -72,15 +74,13 @@ struct NewChildAccountView: View {
                     Button {
                         showImagePicker.toggle()
                     } label: {
-                        HStack {
-                            Text("Choose")
-                                .foregroundStyle(.black)
-
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.green)
-                        }
-                        .border(1, .black)
+                        
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundStyle(.blue)
+                            .font(.title)
+                        
                     }
+                    .offset(x: 25, y: 25)
                 }
                 .padding()
                 
@@ -135,12 +135,22 @@ struct NewChildAccountView: View {
                         }
                         isLoading = false
                     } label: {
-                        Image(systemName: "arrow.forward")
-                            .foregroundStyle(.green)
-                            .bold()
-                            .padding(.horizontal, 50)
+                        if isLoading {
+                            ProgressView()
+                                .border(1, .black)
+                        } else {
+                            
+                            HStack {
+                                Text("Next")
+                                    .foregroundStyle(.black)
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.black)
+                            }
+                            .border(1, .black)
+                            
+                        }
                     }
-                    .border(1, .black)
                     .padding()
                 }
             }
@@ -164,14 +174,19 @@ struct NewChildAccountView: View {
             }
         }
         .alert("Error", isPresented: $showError) {
-                Button("OK", role: .none, action: {})
+            Button("OK", role: .none, action: {})
         } message: {
             Text(errorMsg)
         }
         .alert("Account Created", isPresented: $showAccountCreated) {
-                Button("OK", role: .none, action: {})
+            Button("OK", role: .none, action: {})
         } message: {
             Text("Account created successfully. Login with the username \(ChildUsername) on your child's device")
+        }
+        .alert("Error", isPresented: $showWhitespaceAlert) {
+            Button("OK", role: .none, action: {})
+        } message: {
+            Text("Username cannot contain spaces")
         }
         .overlay(content: {
             LoadingView(show: $isLoading)
@@ -217,38 +232,44 @@ struct NewChildAccountView: View {
     }
     
     func checkUsername() async {
-        isLoading = true
-        Task {
-            await searchChildUsers()
-            
-            if fetchedUsers.isEmpty {
-                isLoading = false
-                await MainActor.run {
-                    CreatChildUser()
-                }
-                return
-            } else {
-                for i in 0...(fetchedUsers.count - 1) {
-                    if ChildUsername == fetchedUsers[i].username {
-                        await MainActor.run {
-                            ShouldProceedWithAccountCreation = false
-                        }
-                        isLoading = false
-                        await setStringError("The username '\(ChildUsername)' is already taken")
-                        return
-                    }
-                }
+        if !ChildUsername.containsWhitespaceAndNewlines() {
+            isLoading = true
+            Task {
                 
-                if ShouldProceedWithAccountCreation {
+                await searchChildUsers()
+                
+                if fetchedUsers.isEmpty {
+                    isLoading = false
                     await MainActor.run {
                         CreatChildUser()
                     }
+                    return
+                } else {
+                    for i in 0...(fetchedUsers.count - 1) {
+                        if ChildUsername == fetchedUsers[i].username {
+                            await MainActor.run {
+                                ShouldProceedWithAccountCreation = false
+                            }
+                            isLoading = false
+                            await setStringError("The username '\(ChildUsername)' is already taken")
+                            return
+                        }
+                    }
+                    
+                    if ShouldProceedWithAccountCreation {
+                        await MainActor.run {
+                            CreatChildUser()
+                        }
+                    }
+                    
+                    isLoading = false
+                    return
                 }
                 
-                isLoading = false
-                return
             }
-            
+        } else {
+            isLoading = false
+            showWhitespaceAlert.toggle()
         }
         
     }

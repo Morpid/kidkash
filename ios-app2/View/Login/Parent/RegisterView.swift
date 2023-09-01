@@ -131,6 +131,7 @@ struct RegisterView: View {
             } label: {
                 if isLoading {
                     ProgressView()
+                        .border(1, .black)
                 } else {
                     
                     HStack {
