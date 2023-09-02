@@ -31,6 +31,7 @@ struct SimpleUserView: View {
             VStack {
                 
                 Text(username)
+                    .foregroundStyle(.black)
                 
             }
             

@@ -41,6 +41,8 @@ struct NewChildAccountView: View {
     @State var errorMsg: String = ""
     
     @State var showAccountCreated: Bool = false
+    
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         
@@ -188,9 +190,6 @@ struct NewChildAccountView: View {
         } message: {
             Text("Username cannot contain spaces")
         }
-        .overlay(content: {
-            LoadingView(show: $isLoading)
-        })
 
 
         
@@ -303,6 +302,7 @@ struct NewChildAccountView: View {
                     if error == nil {
                         print("user saved")
                         isLoading = false
+                        dismiss()
                         showAccountCreated.toggle()
                     }
                 })

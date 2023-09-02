@@ -26,6 +26,8 @@ struct ParentMain: View {
     
     @State var fetchedUsers: [ChildUser] = []
     
+    @State var NewChildUserSheet: Bool = false
+    
     @State var isLoading: Bool = false
     
     @State var showLogoutVerification: Bool = false
@@ -46,7 +48,7 @@ struct ParentMain: View {
         
         NavigationStack {
             
-            VStack(alignment: .center) {
+            ZStack(alignment: .center) {
                 
                 VStack {
                     if !DoneSearchingUsers {
@@ -59,20 +61,51 @@ struct ParentMain: View {
                                 .opacity(0.7)
                         } else {
                             NavigationStack {
-                                List {
-                                    Section() {
+                                
+                                ScrollView {
+                                    
+                                    VStack(alignment: .leading) {
+                                        
                                         ForEach(0..<fetchedUsers.count) { i in
                                             
                                             NavigationLink {
                                                 ParentMainList(fetchedUsers: fetchedUsers, ArrayNumber: i)
                                             } label: {
-                                                SimpleUserView(profileImg: fetchedUsers[i].userProfileURL, username: fetchedUsers[i].username)
+                                                ZStack {
+                                                    
+                                                    Capsule()
+                                                        .foregroundStyle(.ultraThinMaterial)
+                                                        .frame(maxWidth: .infinity)
+                                                    
+                                                    HStack {
+                                                        
+                                                        SimpleUserView(profileImg: fetchedUsers[i].userProfileURL, username: fetchedUsers[i].username)
+                                                            .padding()
+                                                        
+                                                        Spacer()
+                                                        
+                                                        Image(systemName: "chevron.right")
+                                                            .foregroundStyle(.black)
+                                                            .padding()
+                                                            .padding(.trailing)
+                                                        
+                                                    }
+                                                    
+                                                }
                                             }
                                             
+                                            
                                         }
+                                        
+                                        Spacer()
+                                            .frame(height: 75)
+                                        
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    
                                 }
-                                .listStyle(.automatic)
+                                .padding()
+                                
                             }
                             .navigationTitle("Home")
                             .onAppear {
@@ -93,29 +126,15 @@ struct ParentMain: View {
                     }
                 }
                 
-                Spacer()
-                
+                    
                 HStack {
                     
-                    Button {
-                        showLogoutVerification.toggle()
-                    } label: {
-                        HStack {
-                            Image(systemName: "iphone.and.arrow.forward")
-                                .foregroundStyle(.red)
-                                .font(.title2)
-                            
-                            Text("Sign Out")
-                                .foregroundStyle(.red)
-                                
-                        }
-                        .padding()
-                    }
+                    
                     
                     Spacer()
                     
-                    NavigationLink {
-                        NewChildAccountView()
+                    Button {
+                        NewChildUserSheet.toggle()
                     } label: {
                         HStack {
                             
@@ -126,14 +145,19 @@ struct ParentMain: View {
                             
                         }
                         .padding()
-                        .background(.green.opacity(0.6))
+                        .background(.green)
                         .clipShape(Circle())
                     }
-
+                    .padding()
+                    
                     
                 }
                 .padding()
+                .vAlign(.bottom)
+                    
+                
             }
+            .ignoresSafeArea(edges: [.bottom])
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
@@ -144,6 +168,17 @@ struct ParentMain: View {
                     }
                     .tint(.black)
 
+                }
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showLogoutVerification.toggle()
+                    } label: {
+                        Image(systemName: "iphone.and.arrow.forward")
+                            .foregroundStyle(.red)
+                            
+                    }
+                    .tint(.black)
                 }
             }
             
@@ -168,6 +203,12 @@ struct ParentMain: View {
         } message: {
             Text(errorMsg)
         }
+        .sheet(isPresented: $NewChildUserSheet, content: {
+            NewChildAccountView()
+                .presentationDetents([.medium])
+                .presentationBackground(.ultraThinMaterial)
+                .presentationCornerRadius(50)
+        })
         .preferredColorScheme(.light)
         
         
