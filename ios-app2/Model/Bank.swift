@@ -14,6 +14,7 @@ struct Bank: Identifiable, Codable {
     var name: String
     var amount: Double
     var transactionHistoryName: [String]
+    var transactionHistorySubTitle: [String]
     var transactionHistoryAmount: [Double]
     var transactionHistoryDate: [Date]
     var amountHistoryAmount: [Double]
@@ -24,6 +25,7 @@ struct Bank: Identifiable, Codable {
         case name
         case amount
         case transactionHistoryName
+        case transactionHistorySubTitle
         case transactionHistoryAmount
         case transactionHistoryDate
         case amountHistoryAmount
@@ -31,4 +33,3 @@ struct Bank: Identifiable, Codable {
     }
     
 }
-

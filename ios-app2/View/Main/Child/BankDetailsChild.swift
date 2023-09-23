@@ -33,8 +33,6 @@ struct BankDetailsChild: View {
     
     @State var positive_NEG_ARRAY: [Double] = []
     
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    
     @State var refreshChart: Bool = false
     
     @State var bankHistoryAmount: [Double] = []
@@ -216,16 +214,7 @@ struct BankDetailsChild: View {
                                             
                                         }
                                         .padding()
-                                        .onReceive(timer) { input in
-                                            
-                                            if !bank.transactionHistoryAmount.isEmpty {
-                                                
-                                                Task {
-                                                    await loadArrays()
-                                                }
-                                                
-                                            }
-                                        }
+                                        
                                         
                                     }
                                     
@@ -288,16 +277,7 @@ struct BankDetailsChild: View {
                                             
                                         }
                                         .padding()
-                                        .onReceive(timer) { input in
-                                            
-                                            if !bank.transactionHistoryAmount.isEmpty {
-                                                
-                                                Task {
-                                                    await loadArrays()
-                                                }
-                                                
-                                            }
-                                        }
+                                        
                                     }
                                     
                                     
@@ -430,17 +410,7 @@ struct BankDetailsChild: View {
     }
     
     
-    func applicationWillResignActive(_ application: UIApplication) {
-        UserDefaults.standard.set(Date(), forKey: "LastOpened")
-    }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        guard let lastOpened = UserDefaults.standard.object(forKey: "LastOpened") as? Date else { return }
-        
-        let elapsed = Calendar.current.dateComponents([.second], from: lastOpened, to: Date())
-        
-        self.elapsed = elapsed.second!
-    }
     
     func updateFirebaseBank() async {
         
@@ -457,9 +427,10 @@ struct BankDetailsChild: View {
                 let nameReverse: [String] = user.banks[bankArray].transactionHistoryName.reversed()
                 let amountReverse: [Double] = user.banks[bankArray].transactionHistoryAmount.reversed()
                 let dateReverse: [Date] = user.banks[bankArray].transactionHistoryDate.reversed()
+                let subTitleReverse: [String] = user.banks[bankArray].transactionHistorySubTitle.reversed()
                 
                 for i in 0...(nameReverse.count - 1) {
-                    tempTransactionInfo.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i]))
+                    tempTransactionInfo.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i], subtitle: subTitleReverse[i]))
                 }
                 
             }
@@ -473,134 +444,6 @@ struct BankDetailsChild: View {
                     }
                 }
             }
-              
-        }
-    }
-    
-    func getAllBanks() async {
-        Task {
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            for i in 0...(user.banks.count - 1) {
-                AllBanksNames.append(user.banks[i].name)
-            }
-        }
-    }
-    
-    func sendTransferFirebaseStep2(arrayforFrom: Int, arrayforTo: Int) async {
-        
-        
-        Task {
-            
-            var newAmountToSendForFrom: Double
-            var newAmountToSendForTo: Double
-            
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            newAmountToSendForFrom = (user.banks[arrayforFrom].amount - Double(DoubleDigit)!)
-            var amountForFrom = (user.banks[arrayforFrom].amount - Double(DoubleDigit)!)
-            user.banks[arrayforFrom].amount = amountForFrom
-            
-            newAmountToSendForTo = (user.banks[arrayforTo].amount + Double(DoubleDigit)!)
-            var amountForTo = (user.banks[arrayforTo].amount + Double(DoubleDigit)!)
-            user.banks[arrayforTo].amount = amountForTo
-            
-            user.banks[arrayforFrom].amountHistoryAmount.append(newAmountToSendForFrom)
-            
-            user.banks[arrayforTo].amountHistoryAmount.append(newAmountToSendForTo)
-            
-            user.banks[arrayforFrom].amountHistoryDate.append(Date.now)
-            
-            user.banks[arrayforTo].amountHistoryDate.append(Date.now)
-            
-            
-            user.banks[arrayforFrom].transactionHistoryName.append(EditReason)
-            
-            user.banks[arrayforTo].transactionHistoryName.append(EditReason)
-            
-            
-            
-            user.banks[arrayforFrom].transactionHistoryAmount.append(Double("-" + DoubleDigit)!)
-            user.banks[arrayforFrom].transactionHistoryDate.append(Date.now)
-            
-            user.banks[arrayforTo].transactionHistoryAmount.append(Double(DoubleDigit)!)
-            user.banks[arrayforTo].transactionHistoryDate.append(Date.now)
-            
-            
-            let _ = try Firestore.firestore().collection("ChildUsers").document(usernameChild).setData(from: user)
-            
-            
-            isLoading = false
-        }
-    }
-    
-    func sendTransferFirebase(_ amountToTransfer: Double, from: String, to: String) async {
-        
-        isLoading = true
-        
-        Task {
-            let user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            
-            for i in 0...(user.banks.count - 1) {
-                print(from)
-                print(user.banks[i].name)
-                if from == user.banks[i].name {
-                    let arrayforFrom = i
-                    for i in 0...(user.banks.count - 1) {
-                        if to == user.banks[i].name {
-                            let arrayforTo = i
-                            await sendTransferFirebaseStep2(arrayforFrom: arrayforFrom, arrayforTo: arrayforTo)
-                            print("Hi There!!!!!! this is to debug")
-                        }
-                    }
-                    
-                }
-            }
-            
-            
-            
-            
-//            withAnimation {
-//                bank = user.banks[bankArray]
-//            }
-            
-        }
-    }
-    
-    
-    func sendToFirebase(_ newAmountToSend: Double, isSubtract: Bool) async {
-        
-        isLoading = true
-        
-        Task {
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            
-            user.banks[bankArray].amount = newAmountToSend
-            
-            user.banks[bankArray].amountHistoryAmount.append(newAmountToSend)
-            
-            user.banks[bankArray].amountHistoryDate.append(Date.now)
-            
-            user.banks[bankArray].transactionHistoryName.append(EditReason)
-            
-            if isSubtract {
-                user.banks[bankArray].transactionHistoryAmount.append(Double("-" + DoubleDigit)!)
-                user.banks[bankArray].transactionHistoryDate.append(Date.now)
-            } else {
-                user.banks[bankArray].transactionHistoryAmount.append(Double(DoubleDigit)!)
-                user.banks[bankArray].transactionHistoryDate.append(Date.now)
-            }
-            
-            let _ = try Firestore.firestore().collection("ChildUsers").document(usernameChild).setData(from: user)
-            
-            await MainActor.run { [user] in
-                bank = user.banks[bankArray]
-            }
-            
-            
-            isLoading = false
               
         }
     }

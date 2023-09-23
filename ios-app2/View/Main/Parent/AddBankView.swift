@@ -47,7 +47,7 @@ struct AddBankView: View {
                 Button {
                     isLoading = true
                     
-                    currentArray.append(Bank(name: BankName, amount: Double(BankAmount) ?? 0.00, transactionHistoryName: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [Double(BankAmount) ?? 0.00], amountHistoryDate: [Date.now]))
+                    currentArray.append(Bank(name: BankName, amount: Double(BankAmount) ?? 0.00, transactionHistoryName: [], transactionHistorySubTitle: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [Double(BankAmount) ?? 0.00], amountHistoryDate: [Date.now]))
                     Task {
                         await sendArrayToFirebase()
                     }

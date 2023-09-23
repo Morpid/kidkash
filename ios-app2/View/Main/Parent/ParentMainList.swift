@@ -16,9 +16,19 @@ struct ParentMainList: View {
     var body: some View {
         List {
             
-            
-            Section("Viewing Account:") {
-                SimpleUserView(profileImg: fetchedUsers[ArrayNumber].userProfileURL, username: fetchedUsers[ArrayNumber].username)
+            Section("Banks Amounts") {
+                ForEach(0..<fetchedUsers[ArrayNumber].banks.count) { j in
+                    NavigationLink {
+                        BankDetails(bank: fetchedUsers[ArrayNumber].banks[j], bankArray: j, usernameChild: fetchedUsers[ArrayNumber].username, profileImg: fetchedUsers[ArrayNumber].userProfileURL)
+                    } label: {
+                        HStack {
+                            Image(systemName: "dollarsign")
+                            
+                            Text(fetchedUsers[ArrayNumber].banks[j].name)
+                        }
+                    }
+                    
+                }
             }
             
             Section("Reoccuring Transactions") {
@@ -36,23 +46,7 @@ struct ParentMainList: View {
                 
             }
             
-            
-            Section("Banks Amounts") {
-                ForEach(0..<fetchedUsers[ArrayNumber].banks.count) { j in
-                    NavigationLink {
-                        BankDetails(bank: fetchedUsers[ArrayNumber].banks[j], bankArray: j, usernameChild: fetchedUsers[ArrayNumber].username)
-                    } label: {
-                        HStack {
-                            Image(systemName: "dollarsign")
-                            
-                            Text(fetchedUsers[ArrayNumber].banks[j].name)
-                        }
-                    }
-                    
-                }
-            }
-            
-            Section() {
+            Section("Bank Accounts") {
                 NavigationLink {
                     VStack {
                         AddBankView(username: fetchedUsers[ArrayNumber].username, currentArray: fetchedUsers[ArrayNumber].banks)
@@ -66,7 +60,7 @@ struct ParentMainList: View {
                 }
             }
             
-            Section() {
+            Section("More") {
                 
                 NavigationLink {
                     Text("settings")
@@ -77,12 +71,23 @@ struct ParentMainList: View {
                         Text("Settings")
                     }
                 }
+                
+                NavigationLink {
+                    Text("delete")
+                } label: {
+                    HStack {
+                        Image(systemName: "trash")
+                            .foregroundStyle(.red)
+                        
+                        Text("Delete Account")
+                            .foregroundStyle(.red)
+                    }
+                }
                     
                 
             }
         }
-        .background(.black.gradient.opacity(0.25))
-    }
+        .navigationTitle(fetchedUsers[ArrayNumber].username)    }
 }
 
 #Preview {

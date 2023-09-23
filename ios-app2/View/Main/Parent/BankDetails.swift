@@ -13,38 +13,30 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import SDWebImageSwiftUI
 import PhotosUI
+import Algorithms
+import SDWebImageSwiftUI
 
-struct BankTransactionInfo: Hashable {
+struct BankTransactionInfo: Identifiable, Equatable {
+    var id = UUID()
     let amount: Double
     let date: Date
     let name: String
+    let subtitle: String
 }
 
 struct BankDetails: View {
     
-    @Namespace var trailingID
+    @State var plotWidth: CGFloat = 0
     
-    @Namespace var animation
+    @State var AnnotationPos: AnnotationPosition = .top
     
-    @State var AllBanksNames: [String] = []
-    
-    @State var DoubleDigit: String = ""
+    @State var expense_amount: String = ""
     
     @State var bank: Bank
     
-    @State var showNeg: Bool = false
+    @State var usable_negative_array: [Double] = []
     
-    @State var elapsed: Int = 0
-    
-    @State var positive_NEG_ARRAY: [Double] = []
-    
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    
-    @State var refreshChart: Bool = false
-    
-    @State var bankHistoryAmount: [Double] = []
-    
-    @State var TransactionInfo: [BankTransactionInfo] = []
+    @State var transaction_info: [BankTransactionInfo] = []
     
     @State var bankArray: Int
     @State var usernameChild: String
@@ -52,751 +44,113 @@ struct BankDetails: View {
     @State var negArray: [Double] = []
     @State var posArray: [Double] = []
     
-    @State var negArrayDates: [Date] = []
-    @State var posArrayDates: [Date] = []
+    @State var currentActiveItem: (amount: Double, date: Date, index: Int)?
     
     @State var isLoading: Bool = false
     
-    @State var loading: Bool = false
+    @State var new_amount: Double = 0.00
     
-    @State var isDoneLoadingArrays: Bool = false
-    
-    @State var newAmount: Double = 0.00
-    
-    @State var AddTextFieldFirstDigit: String = ""
-    @State var AddTextFieldSecondDigit: String = ""
-    
-    @State var SubtractTextFieldFirstDigit: String = ""
-    @State var SubtractTextFieldSecondDigit: String = ""
-    
-    @State var showSheet0: Bool = false
-    @State var showSheet1: Bool = false
-    @State var showSheet2: Bool = false
+    @State var show_expense_sheet: Bool = false
+    @State var expense_type: String = "Expense"
     
     @State var showButton: Bool = false
-    @State var EditReason: String = ""
+    @State var Description: String = ""
     
-    @State var bankSelection1 = "Savings"
-    @State var bankSelection2 = "Savings"
+    @State var profileImg: URL?
+    
+    @State var bankSelection1 = ""
+    @State var bankSelection2 = ""
+    
+    @State var show_number_err_alert: Bool = false
     
     var body: some View {
-        if !loading {
-            GeometryReader { proxy in
-                
-                VStack {
+        GeometryReader { proxy in
+            
+           
+            
+            if bank.transactionHistoryAmount.count > 0 {
+                List {
                     
-                    Text("$\(bank.amount, specifier: "%.2f")")
-                        .font(.title)
-                    
-                    HStack {
-                        Button {
-                            withAnimation {
-                                if showSheet0 {
-                                    showSheet2 = false
-                                    showSheet1 = false
-                                    showSheet0 = false
-                                } else {
-                                    
-                                    if showSheet0 == true || showSheet1 == true || showSheet2 == true {
-                                        print("trure")
-                                        showSheet2 = false
-                                        showSheet1 = false
-                                        showSheet0 = false
-                                        Task {
-                                            do {
-                                                
-                                                try await Task.sleep(nanoseconds: 1_000_000_000)
-                                                
-                                                withAnimation {
-                                                    showSheet0 = true
-                                                }
-                                            }
-                                            catch {
-                                                print("Error")
-                                            }
-                                        }
-                                    } else {
-                                        showSheet0 = true
-                                    }
-                                    
-                                    
-                                    
-                                }
-                            }
-                        } label: {
-                            if showSheet0 {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.black.opacity(0.5))
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "plus")
-                                        .foregroundStyle(.green)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            } else {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.gray.opacity(0.2).gradient)
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "plus")
-                                        .foregroundStyle(.black)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            }
-                        }
-                        .padding()
-                        
-                        Button {
-                            withAnimation {
-                                if showSheet1 {
-                                    showSheet2 = false
-                                    showSheet1 = false
-                                    showSheet0 = false
-                                } else {
-                                    
-                                    if showSheet0 == true || showSheet1 == true || showSheet2 == true {
-                                        print("trure")
-                                        showSheet2 = false
-                                        showSheet1 = false
-                                        showSheet0 = false
-                                        Task {
-                                            do {
-                                                
-                                                try await Task.sleep(nanoseconds: 1_000_000_000)
-                                                withAnimation {
-                                                    showSheet1 = true
-                                                }
-                                            }
-                                            catch {
-                                                print("Error")
-                                            }
-                                        }
-                                        
-                                    } else {
-                                        showSheet1 = true
-                                    }
-                                    
-                                    
-                                    
-                                }
-                            }
-                        } label: {
-                            if showSheet1 {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.black.opacity(0.5))
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "minus")
-                                        .foregroundStyle(.red)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            } else {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.gray.opacity(0.2).gradient)
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "minus")
-                                        .foregroundStyle(.black)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            }
-                        }
-                        .padding()
-                        
-                        Button {
-                            withAnimation {
-                                if showSheet2 {
-                                    showSheet2 = false
-                                    showSheet1 = false
-                                    showSheet0 = false
-                                } else {
-                                    
-                                    
-                                    
-                                    if showSheet0 == true || showSheet1 == true || showSheet2 == true {
-                                        
-                                        print("trure")
-                                        
-                                        showSheet2 = false
-                                        showSheet1 = false
-                                        showSheet0 = false
-                                        
-                                        Task {
-                                            do {
-                                                
-                                                
-                                                
-                                                try await Task.sleep(nanoseconds: 1_000_000_000)
-                                                
-                                                
-                                                withAnimation {
-                                                    showSheet2 = true
-                                                }
-                                            }
-                                            catch {
-                                                print("Error")
-                                            }
-                                        }
-                                        
-                                    } else {
-                                        showSheet2 = false
-                                        showSheet1 = false
-                                        showSheet0 = false
-                                        
-                                        showSheet2 = true
-                                    }
-                                    
-                                }
-                            }
-                        } label: {
-                            if showSheet2 {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.black.opacity(0.5))
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "arrow.left.arrow.right")
-                                        .foregroundStyle(.yellow)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            } else {
-                                ZStack {
-                                    
-                                    Circle()
-                                        .foregroundStyle(.gray.opacity(0.2).gradient)
-                                        .frame(width: 50)
-                                    
-                                    Image(systemName: "arrow.left.arrow.right")
-                                        .foregroundStyle(.black)
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                    
-                    
-                    
-                    ZStack {
-                        
-                        Rectangle()
-                            .cornerRadius(radius: 50, corners: [.topLeft, .topRight])
-                            .foregroundStyle(.ultraThinMaterial)
-                            .ignoresSafeArea(edges: [.bottom])
-                        
+                    Section {
+                            
                         VStack {
-                            
-                            if showSheet0 {
+                            ZStack {
                                 
-                                    
-                                    Text("Add")
-                                        .font(.title)
-                                        .bold()
-                                        .padding()
-                                    
-                                    HStack {
-                                        
-                                        Text("$")
-                                        
-                                        TextField("Amount", text: $DoubleDigit)
-                                            
-                                            .keyboardType(.decimalPad)
-                                        
-                                    }
-                                    .border(1, .black)
-                                    .padding()
-                                    .onChange(of: DoubleDigit) { oldValue, newValue in
-                                        if !newValue.isEmpty {
-                                            withAnimation {
-                                                showButton = true
-                                            }
-                                        } else {
-                                            withAnimation {
-                                                showButton = false
-                                            }
-                                        }
-                                    }
-                                    
-                                    TextField("Reason", text: $EditReason)
-                                        .border(1, .black)
-                                        .padding()
+                                HStack {
                                     
                                     Spacer()
                                     
-                                    Button {
-                                        
-                                        Task {
-                                            await MainActor.run {
-                                                //loading = true
-                                            }
-                                        }
-                                        
-                                        withAnimation { showSheet0 = false }
-                                    } label: {
-                                        Text("Cancel")
-                                            .foregroundStyle(.black)
-                                            .bold()
-                                            .padding(.horizontal, 50)
-                                            .border(1, .black)
-                                    }
-                                    
-                                    if showButton {
-                                        Button {
-                                            newAmount = (bank.amount + Double(DoubleDigit)!)
-                                            Task {
-                                                await sendToFirebase(newAmount, isSubtract: false)
-                                                await MainActor.run {
-                                                    //loading = true
-                                                }
-                                            }
-                                            withAnimation { showSheet0 = false }
-                                        } label: {
-                                            Image(systemName: "arrow.forward")
-                                                .foregroundStyle(.green)
-                                                .bold()
-                                                .padding(.horizontal, 50)
-                                                .border(1, .black)
-                                        }
-                                        
-                                    }
-                                
-                            } else if showSheet1 {
-                                
-                                    Text("Subtract")
+                                    Text("$\(bank.amount, specifier: "%.2f")")
                                         .font(.title)
-                                        .bold()
-                                        .padding()
                                     
-                                    HStack {
-                                        
-                                        Text("$")
-                                        
-                                        TextField("Amount", text: $DoubleDigit)
-                                            
-                                            .keyboardType(.decimalPad)
-                                        
-                                    }
-                                    .border(1, .black)
-                                    .padding()
-                                    .onChange(of: DoubleDigit) { oldValue, newValue in
-                                        if !newValue.isEmpty {
-                                            
-                                            withAnimation {
-                                                showButton = true
-                                            }
-                                            
-                                        } else {
-                                            withAnimation {
-                                                showButton = false
-                                            }
-                                        }
-                                    }
-                                    
-                                    TextField("Reason", text: $EditReason)
-                                        .border(1, .black)
-                                        .padding()
                                     
                                     Spacer()
-                                    
-                                    Button {
-                                        Task {
-                                            await MainActor.run {
-                                                //loading = true
-                                            }
-                                        }
-                                        withAnimation { showSheet1 = false }
-                                    } label: {
-                                        Text("Cancel")
-                                            .foregroundStyle(.black)
-                                            .bold()
-                                            .padding(.horizontal, 50)
-                                            .border(1, .black)
-                                    }
-                                    
-                                    if showButton {
-                                        Button {
-                                            newAmount = (bank.amount - Double(DoubleDigit)!)
-                                            Task {
-                                                await sendToFirebase(newAmount, isSubtract: true)
-                                                await MainActor.run {
-                                                    //loading = true
-                                                }
-                                            }
-                                            withAnimation { showSheet1 = false }
-                                        } label: {
-                                            Image(systemName: "arrow.forward")
-                                                .foregroundStyle(.green)
-                                                .bold()
-                                                .padding(.horizontal, 50)
-                                                .border(1, .black)
-                                        }
-                                        
-                                    }
+                                }
+                                .padding(.all, 20)
                                 
-                            } else if showSheet2 {
-                                
-                                    Text("Transfer")
-                                        .font(.title)
-                                        .bold()
-                                        .padding()
-                                        .task {
-                                            AllBanksNames = []
-                                            await getAllBanks()
-                                        }
-                                    
-                                    if !AllBanksNames.isEmpty {
-                                        HStack {
-                                            Picker("Select Bank Account", selection: $bankSelection1) {
-                                                ForEach(AllBanksNames, id: \.self) {
-                                                    Text($0)
-                                                        .foregroundStyle(.black)
-                                                        .bold()
-                                                }
-                                            }
-                                            .pickerStyle(.wheel)
-                                            
-                                            
-                                            Text("to")
-                                            
-                                            Picker("Select Bank Account", selection: $bankSelection2) {
-                                                ForEach(AllBanksNames, id: \.self) {
-                                                    Text($0)
-                                                        .foregroundStyle(.black)
-                                                        .bold()
-                                                }
-                                            }
-                                            .pickerStyle(.wheel)
-                                            
-                                        }
-                                    }
-                                    
-                                    HStack {
-                                        
-                                        Text("$")
-                                        
-                                        TextField("Amount", text: $DoubleDigit)
-                                            
-                                            .keyboardType(.decimalPad)
-                                        
-                                    }
-                                    .border(1, .black)
-                                    .padding()
-                                    .onChange(of: DoubleDigit) { oldValue, newValue in
-                                        if !newValue.isEmpty {
-                                            
-                                            withAnimation {
-                                                showButton = true
-                                            }
-                                            
-                                        } else {
-                                            withAnimation {
-                                                showButton = false
-                                            }
-                                        }
-                                    }
-                                    
-                                    TextField("Reason", text: $EditReason)
-                                        .border(1, .black)
-                                        .padding()
-                                    
-                                    Spacer()
-                                    
-                                    Button {
-                                        Task {
-                                            await MainActor.run {
-                                                //loading = true
-                                            }
-                                        }
-                                        withAnimation { showSheet2 = false }
-                                    } label: {
-                                        Text("Cancel")
-                                            .foregroundStyle(.black)
-                                            .bold()
-                                            .padding(.horizontal, 50)
-                                            .border(1, .black)
-                                    }
-                                    
-                                    if showButton {
-                                        Button {
-                                            newAmount = (bank.amount - Double(DoubleDigit)!)
-                                            Task {
-                                                await sendTransferFirebase(newAmount, from: bankSelection1, to: bankSelection2)
-                                                
-                                                await MainActor.run {
-                                                    //loading = true
-                                                }
-                                            }
-                                            
-                                            
-                                            withAnimation { showSheet2 = false }
-                                        } label: {
-                                            Image(systemName: "arrow.forward")
-                                                .foregroundStyle(.green)
-                                                .bold()
-                                                .padding(.horizontal, 50)
-                                                .border(1, .black)
-                                        }
-                                        
-                                    }
                                 
                             }
                             
-                            ScrollView {
-                                
-                                
-                                
-                                if bank.amountHistoryAmount.count >= 2 {
-                                    VStack(alignment: .leading) {
-                                        
-                                        Text("Amount History")
-                                            .font(.title)
-                                            .fontWeight(.heavy)
-                                            .frame(alignment: .leading)
-                                        
-                                        Text("Past 10 Changes")
-                                            .font(.callout)
-                                            .opacity(0.75)
-                                            .frame(alignment: .leading)
-                                        
-                                        if bank.amountHistoryAmount.count > 10 {
-                                            Chart {
-                                                ForEach(Array(bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 11)...(bank.amountHistoryAmount.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                    LineMark(
-                                                        x: .value("Index", index),
-                                                        y: .value("Value", value)
-                                                    )
-                                                    .foregroundStyle(.mint.gradient)
-                                                    
-                                                    
-                                                }
-                                            }
-                                            .frame(height: proxy.size.height / 3)
-                                            
-                                        } else {
-                                            Chart {
-                                                ForEach(Array(bank.amountHistoryAmount.enumerated()), id: \.offset) { index, value in
-                                                    LineMark(
-                                                        x: .value("Index", index),
-                                                        y: .value("Value", value)
-                                                    )
-                                                    .foregroundStyle(.mint.gradient)
-                                                    
-                                                }
-                                            }
-                                            .frame(height: proxy.size.height / 3)
-                                        }
-                                        
-                                        
-                                    }
-                                    .padding()
-                                    .task {
-                                        if bank.transactionHistoryAmount != [] {
-                                            Task {
-                                                await loadArrays()
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                }
-                                
-                                if bank.transactionHistoryAmount.count >= 2 {
-                                    
-                                    if posArray.count >= 2 {
-                                        VStack(alignment: .leading) {
-                                            
-                                            Text("Add History")
-                                                .font(.title)
-                                                .fontWeight(.heavy)
-                                                .frame(alignment: .leading)
-                                            
-                                            Text("Past 10 Changes")
-                                                .font(.callout)
-                                                .opacity(0.75)
-                                                .frame(alignment: .leading)
-                                            
-                                            if posArray.count > 10 {
-                                                
-                                                
-                                                Chart {
-                                                    ForEach(Array(posArray[(posArray.count - 11)...(posArray.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.green.gradient)
-                                                        
-                                                    }
-                                                    
-                                                }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
-                                                
-                                            } else {
-                                                Chart {
-                                                    ForEach(Array(posArray.enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.green.gradient)
-                                                        
-                                                    }
-                                                }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
-                                            }
-                                            
-                                            
-                                        }
-                                        .padding()
-                                        .onReceive(timer) { input in
-                                            
-                                            if !bank.transactionHistoryAmount.isEmpty {
-                                                
-                                                Task {
-                                                    await loadArrays()
-                                                }
-                                                
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                    
-                                    if negArray.count >= 2 {
-                                        VStack(alignment: .leading) {
-                                            
-                                            Text("Subtract History")
-                                                .font(.title)
-                                                .fontWeight(.heavy)
-                                                .frame(alignment: .leading)
-                                            
-                                            Text("Past 10 Changes")
-                                                .font(.callout)
-                                                .opacity(0.75)
-                                                .frame(alignment: .leading)
-                                            
-                                            if negArray.count > 10 {
-                                                
-                                                
-                                                Chart {
-                                                    ForEach(Array(negArray[(negArray.count - 11)...(negArray.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.red.gradient)
-                                                        
-                                                        //                                            AreaMark(
-                                                        //                                                x: .value("Index", index),
-                                                        //                                                y: .value("Value", value)
-                                                        //                                            )
-                                                        //                                            .foregroundStyle(.red.opacity(0.2).gradient)
-                                                    }
-                                                }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
-                                                
-                                            } else {
-                                                Chart {
-                                                    ForEach(Array(negArray.enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.red.gradient)
-                                                        
-                                                        //                                            AreaMark(
-                                                        //                                                x: .value("Index", index),
-                                                        //                                                y: .value("Value", value)
-                                                        //                                            )
-                                                        //                                            .foregroundStyle(.red.opacity(0.2).gradient)
-                                                    }
-                                                }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
-                                                
-                                            }
-                                            
-                                            
-                                        }
-                                        .padding()
-                                        .onReceive(timer) { input in
-                                            
-                                            if !bank.transactionHistoryAmount.isEmpty {
-                                                
-                                                Task {
-                                                    await loadArrays()
-                                                }
-                                                
-                                            }
-                                        }
-                                    }
-                                    
-                                    
-                                    
-                                }
-                                
-                                if bank.transactionHistoryAmount.count > 0 {
-                                    VStack(alignment: .leading) {
-                                        Text("Transaction History")
-                                            .font(.title)
-                                            .fontWeight(.heavy)
-                                            .frame(alignment: .leading)
-                                        
-                                        Divider()
-                                        
-                                        ForEach(0..<bank.transactionHistoryAmount.count) { i in
-                                            
-                                            HStack {
-                                                Text("\(bank.transactionHistoryName[(bank.transactionHistoryAmount.count - (i + 1))])")
-                                                    .bold()
-                                                
-                                                Spacer()
-                                                
-                                                Text(bank.transactionHistoryDate[(bank.transactionHistoryAmount.count - (i + 1))], format: .dateTime.day().month().year())
-                                                
-                                                Text("\(bank.transactionHistoryAmount[(bank.transactionHistoryAmount.count - (i + 1))], specifier: "%.2f")")
-                                                    .bold()
-                                                
-                                            }
-                                            .padding()
-                                            
-                                            Divider()
-                                        }
-                                    }
-                                }
-                                
-                                
-                                
-                            }
-                            .padding()
                             
+                            
+                            AmountHistoryChart()
+                            
+                            HStack {
+                                
+                                VStack {
+                                    
+                                    Text("Amount History")
+                                        .font(.caption)
+                                        .bold()
+                                        .foregroundStyle(.black)
+                                    
+                                    Text("Past 10 Changes")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                    
+                                }
+                                
+                                Spacer()
+                                
+                                Divider()
+                                    .padding(.vertical)
+                                
+                                Spacer()
+                                
+                                Text("Drag along chart to view amounts")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray)
+                                
+                                Image(systemName: "arrow.up")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray)
+                            }
                         }
                         
                         
                     }
+                    
+                    
+                        
+                    Section() {
+                        ForEach(transaction_info) { transaction in
+                            ExpenseCardView(title: transaction.name, sub_title: transaction.subtitle, date: transaction.date, amount: transaction.amount)
+                        }
+                    }
+                        
                     
                 }
                 .frame(maxWidth: .infinity)
                 .navigationTitle(bank.name)
-                .background(LinearGradient(colors: [.mint.opacity(0.25), .gray], startPoint: .topTrailing, endPoint: .bottomLeading))
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            show_expense_sheet.toggle()
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                        }
+                    }
+                }
                 .onAppear {
                     Task {
                         await updateFirebaseBank()
@@ -804,42 +158,92 @@ struct BankDetails: View {
                         await loadArrays()
                     }
                     
+                    
+                    
+                }
+                .alert("Please enter a valid amount", isPresented: $show_number_err_alert) {
+                    Button("OK", role: .none, action: {})
+                }
+                .sheet(isPresented: $show_expense_sheet) {
+                    AddExpenseView(bankArray: bankArray, username: usernameChild, selectedExpenseType: expense_type, bank: $bank)
                 }
                 
-            }
-            .overlay {
-                LoadingView(show: $isLoading)
-            }
-            .preferredColorScheme(.light)
-            .refreshable {
-                
-                Task {
-                    
-                    await updateFirebaseBank()
-                    
-                    await loadArrays()
-                    
-                    if bank.transactionHistoryAmount.count > 1 {
-                        
-                        var newarraytemp: [Double] = []
-                        
-                        for i in 0...(negArray.count - 1) {
-                            newarraytemp.append(-negArray[i])
+            } else {
+                ContentUnavailableView {
+                    Label("Nothing Here Yet...", systemImage: "tray")
+                }
+                .frame(maxWidth: .infinity)
+                .navigationTitle(bank.name)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            show_expense_sheet.toggle()
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
                         }
+                    }
+                }
+                .onAppear {
+                    Task {
+                        await updateFirebaseBank()
                         
-                        await MainActor.run {
-                            positive_NEG_ARRAY = newarraytemp
-                        }
+                        await loadArrays()
                     }
                     
                     
                     
                 }
+                .alert("Please enter a valid amount", isPresented: $show_number_err_alert) {
+                    Button("OK", role: .none, action: {})
+                }
+                .sheet(isPresented: $show_expense_sheet) {
+                    AddExpenseView(bankArray: bankArray, username: usernameChild, selectedExpenseType: expense_type, bank: $bank)
+                }
+            }
+            
+        }
+        .overlay {
+            LoadingView(show: $isLoading)
+        }
+        .preferredColorScheme(.light)
+        .refreshable {
+            
+            Task {
                 
-                await delay()
+                await updateFirebaseBank()
+                
+                await loadArrays()
+                
+                if bank.transactionHistoryAmount.count > 1 {
+                    
+                    var newarraytemp: [Double] = []
+                    
+                    if negArray.count >= 2 {
+                        for i in 0...(negArray.count - 1) {
+                            newarraytemp.append(-negArray[i])
+                        }
+                    }
+                    
+                    
+                    await MainActor.run {
+                        usable_negative_array = newarraytemp
+                    }
+                }
+                
+                
                 
             }
+            
         }
+        
+    }
+    
+//    func transactionsByMonth() -> [[BankTransactionInfo]] {
+//        guard !
+//    }
+    
+    func checkNumeric(S: String) -> Bool {
+       return Double(S) != nil
     }
     
     func loadArrays() async {
@@ -876,22 +280,226 @@ struct BankDetails: View {
             
         }
     
-        
-        isDoneLoadingArrays = true
     }
     
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        UserDefaults.standard.set(Date(), forKey: "LastOpened")
+    @ViewBuilder
+    func AmountHistoryChart() -> some View {
+        let max = bank.amountHistoryAmount.max()
+        
+        if bank.amountHistoryAmount.count >= 2 {
+            VStack(alignment: .leading) {
+                
+                if bank.amountHistoryAmount.count > 10 {
+                    Chart {
+                        ForEach(Array(bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 11)...(bank.amountHistoryAmount.count - 1)].enumerated()), id: \.offset) { index, value in
+                            LineMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient)
+                            
+                            AreaMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient.opacity(0.2))
+                            
+                            PointMark(
+                                x: .value("Index", 9),
+                                y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                            )
+                            .foregroundStyle(.green)
+                            .annotation(position: .top) {
+                                Text("now")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray)
+                            }
+                            
+                            if let currentActiveItem, currentActiveItem.index == index {
+                                RuleMark (
+                                    x: .value("Index", currentActiveItem.index)
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: AnnotationPos) {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text("$\(currentActiveItem.amount, specifier: "%.2f")")
+                                            .font(.callout.bold())
+                                            .foregroundStyle(.black)
+                                        
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.day().month().year())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.hour().minute())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+//                                                                Text("\(currentActiveItem.date, format: .dateTime.day().minute())")
+//                                                                    .font(.title3)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .fill(.white.shadow(.drop(radius: 2
+                                                                        )))
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    .frame(height: 150)
+                    .chartYScale(domain: 0...(max!))
+                    .chartXAxis(.hidden)
+                    .chartYAxis(.hidden)
+                    .chartXScale(domain: 0...(bank.amountHistoryAmount.count - 1))
+                    .chartOverlay { proxy in
+                        GeometryReader { innerProxy in
+                            Rectangle()
+                                .fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            let location = value.location
+                                            
+                                            if let index_value: Int = proxy.value(atX: location.x) {
+                                                if index_value <= 9 && index_value >= 0 {
+                                                    
+                                                    if index_value == 0 {
+                                                        AnnotationPos = .topTrailing
+                                                    } else if index_value == 9 {
+                                                        AnnotationPos = .topLeading
+                                                    } else {
+                                                        AnnotationPos = .top
+                                                    }
+                                                    
+                                                    self.currentActiveItem = (amount: bank.amountHistoryAmount[((bank.amountHistoryAmount.count - 11) + index_value)], date: bank.amountHistoryDate[((bank.amountHistoryDate.count - 11) + index_value)], index: index_value)
+                                                    
+                                                    self.plotWidth = proxy.plotSize.width
+                                                }
+                                            }
+                                        }.onEnded({ value in
+                                            self.currentActiveItem = nil
+                                        })
+                                )
+                        }
+                    }
+                    
+                } else {
+                    Chart {
+                        ForEach(Array(bank.amountHistoryAmount.enumerated()), id: \.offset) { index, value in
+                            LineMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient)
+                            
+                            AreaMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient.opacity(0.2))
+                            
+                            PointMark(
+                                x: .value("Index", (bank.amountHistoryAmount.count - 1)),
+                                y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                            )
+                            .foregroundStyle(.green)
+                            .annotation(position: .top) {
+                                Text("now")
+                                    .font(.caption2)
+                                    .foregroundStyle(.gray)
+                            }
+                            
+                            if let currentActiveItem, currentActiveItem.index == index {
+                                RuleMark (
+                                    x: .value("Index", currentActiveItem.index)
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: AnnotationPos) {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text("$\(currentActiveItem.amount, specifier: "%.2f")")
+                                            .font(.callout.bold())
+                                            .foregroundStyle(.black)
+                                        
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.day().month().year())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.hour().minute())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+//                                                                Text("\(currentActiveItem.date, format: .dateTime.day().minute())")
+//                                                                    .font(.title3)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .fill(.white.shadow(.drop(radius: 2
+                                                                        )))
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    .frame(height: 150)
+                    .chartYScale(domain: 0...(max!))
+                    .chartXAxis(.hidden)
+                    .chartYAxis(.hidden)
+                    .chartXScale(domain: 0...(bank.amountHistoryAmount.count - 1))
+                    .chartOverlay { proxy in
+                        GeometryReader { innerProxy in
+                            Rectangle()
+                                .fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            let location = value.location
+                                            
+                                            if let index_value: Int = proxy.value(atX: location.x) {
+                                                if index_value <= (bank.amountHistoryAmount.count - 1) && index_value >= 0 {
+                                                    
+                                                    if index_value == 0 {
+                                                        AnnotationPos = .topTrailing
+                                                    } else if index_value == (bank.amountHistoryAmount.count - 1) {
+                                                        AnnotationPos = .topLeading
+                                                    } else {
+                                                        AnnotationPos = .top
+                                                    }
+                                                    
+                                                    self.currentActiveItem = (amount: bank.amountHistoryAmount[index_value], date: bank.amountHistoryDate[index_value], index: index_value)
+                                                    self.plotWidth = proxy.plotSize.width
+                                                }
+                                            }
+                                        }.onEnded({ value in
+                                            self.currentActiveItem = nil
+                                        })
+                                )
+                        }
+                    }
+                }
+                
+                
+            }
+            .padding()
+            .task {
+                if bank.transactionHistoryAmount != [] {
+                    Task {
+                        await loadArrays()
+                    }
+                }
+                                    
+            }
+                                
+        }
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        guard let lastOpened = UserDefaults.standard.object(forKey: "LastOpened") as? Date else { return }
-        
-        let elapsed = Calendar.current.dateComponents([.second], from: lastOpened, to: Date())
-        
-        self.elapsed = elapsed.second!
-    }
     
     func updateFirebaseBank() async {
         
@@ -899,7 +507,7 @@ struct BankDetails: View {
         Task {
             var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
             
-            var tempTransactionInfo: [BankTransactionInfo] = []
+            var temp_transaction_info: [BankTransactionInfo] = []
             
             let count = user.banks[bankArray].transactionHistoryAmount.count
             
@@ -908,19 +516,20 @@ struct BankDetails: View {
                 let nameReverse: [String] = user.banks[bankArray].transactionHistoryName.reversed()
                 let amountReverse: [Double] = user.banks[bankArray].transactionHistoryAmount.reversed()
                 let dateReverse: [Date] = user.banks[bankArray].transactionHistoryDate.reversed()
+                let subTitleReverse: [String] = user.banks[bankArray].transactionHistorySubTitle.reversed()
                 
                 for i in 0...(nameReverse.count - 1) {
-                    tempTransactionInfo.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i]))
+                    temp_transaction_info.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i], subtitle: subTitleReverse[i]))
                 }
                 
             }
 
-            await MainActor.run { [user, tempTransactionInfo] in
+            await MainActor.run { [user, temp_transaction_info] in
                 withAnimation {
                     bank = user.banks[bankArray]
                     
-                    if tempTransactionInfo != TransactionInfo {
-                        TransactionInfo = tempTransactionInfo
+                    if temp_transaction_info != transaction_info {
+                        transaction_info = temp_transaction_info
                     }
                 }
             }
@@ -928,137 +537,9 @@ struct BankDetails: View {
         }
     }
     
-    func getAllBanks() async {
-        Task {
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            for i in 0...(user.banks.count - 1) {
-                AllBanksNames.append(user.banks[i].name)
-            }
-        }
-    }
     
-    func sendTransferFirebaseStep2(arrayforFrom: Int, arrayforTo: Int) async {
-        
-        
-        Task {
-            
-            var newAmountToSendForFrom: Double
-            var newAmountToSendForTo: Double
-            
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            newAmountToSendForFrom = (user.banks[arrayforFrom].amount - Double(DoubleDigit)!)
-            var amountForFrom = (user.banks[arrayforFrom].amount - Double(DoubleDigit)!)
-            user.banks[arrayforFrom].amount = amountForFrom
-            
-            newAmountToSendForTo = (user.banks[arrayforTo].amount + Double(DoubleDigit)!)
-            var amountForTo = (user.banks[arrayforTo].amount + Double(DoubleDigit)!)
-            user.banks[arrayforTo].amount = amountForTo
-            
-            user.banks[arrayforFrom].amountHistoryAmount.append(newAmountToSendForFrom)
-            
-            user.banks[arrayforTo].amountHistoryAmount.append(newAmountToSendForTo)
-            
-            user.banks[arrayforFrom].amountHistoryDate.append(Date.now)
-            
-            user.banks[arrayforTo].amountHistoryDate.append(Date.now)
-            
-            
-            user.banks[arrayforFrom].transactionHistoryName.append(EditReason)
-            
-            user.banks[arrayforTo].transactionHistoryName.append(EditReason)
-            
-            
-            
-            user.banks[arrayforFrom].transactionHistoryAmount.append(Double("-" + DoubleDigit)!)
-            user.banks[arrayforFrom].transactionHistoryDate.append(Date.now)
-            
-            user.banks[arrayforTo].transactionHistoryAmount.append(Double(DoubleDigit)!)
-            user.banks[arrayforTo].transactionHistoryDate.append(Date.now)
-            
-            
-            let _ = try Firestore.firestore().collection("ChildUsers").document(usernameChild).setData(from: user)
-            
-            
-            isLoading = false
-        }
-    }
     
-    func sendTransferFirebase(_ amountToTransfer: Double, from: String, to: String) async {
-        
-        isLoading = true
-        
-        Task {
-            let user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            
-            for i in 0...(user.banks.count - 1) {
-                print(from)
-                print(user.banks[i].name)
-                if from == user.banks[i].name {
-                    let arrayforFrom = i
-                    for i in 0...(user.banks.count - 1) {
-                        if to == user.banks[i].name {
-                            let arrayforTo = i
-                            await sendTransferFirebaseStep2(arrayforFrom: arrayforFrom, arrayforTo: arrayforTo)
-                            print("Hi There!!!!!! this is to debug")
-                        }
-                    }
-                    
-                }
-            }
-            
-            
-            
-            
-//            withAnimation {
-//                bank = user.banks[bankArray]
-//            }
-            
-        }
-    }
     
-    func delay() async {
-        let request = URLRequest(url: URL(string: "https://httpbin.org/delay/2")!) // 2
-        let _ = try! await URLSession.shared.data(for: request)
-    }
-    
-    func sendToFirebase(_ newAmountToSend: Double, isSubtract: Bool) async {
-        
-        isLoading = true
-        
-        Task {
-            var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
-            
-            
-            user.banks[bankArray].amount = newAmountToSend
-            
-            user.banks[bankArray].amountHistoryAmount.append(newAmountToSend)
-            
-            user.banks[bankArray].amountHistoryDate.append(Date.now)
-            
-            user.banks[bankArray].transactionHistoryName.append(EditReason)
-            
-            if isSubtract {
-                user.banks[bankArray].transactionHistoryAmount.append(Double("-" + DoubleDigit)!)
-                user.banks[bankArray].transactionHistoryDate.append(Date.now)
-            } else {
-                user.banks[bankArray].transactionHistoryAmount.append(Double(DoubleDigit)!)
-                user.banks[bankArray].transactionHistoryDate.append(Date.now)
-            }
-            
-            let _ = try Firestore.firestore().collection("ChildUsers").document(usernameChild).setData(from: user)
-            
-            await MainActor.run { [user] in
-                bank = user.banks[bankArray]
-            }
-            
-            
-            isLoading = false
-              
-        }
-    }
 }
 
 #Preview {

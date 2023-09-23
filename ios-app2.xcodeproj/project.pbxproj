@@ -50,6 +50,9 @@
 		A5A7DAAE2A74B8E200A66BFD /* BankDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7DAAD2A74B8E200A66BFD /* BankDetails.swift */; };
 		A5A7DAB02A74BA6A00A66BFD /* ParentMainList.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A7DAAF2A74BA6A00A66BFD /* ParentMainList.swift */; };
 		A5B121282A788FCF00A7C819 /* BankDetailsChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B121272A788FCF00A7C819 /* BankDetailsChild.swift */; };
+		A5B1C6F52AB625C30064E36D /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C6F42AB625C30064E36D /* AddExpenseView.swift */; };
+		A5B1C6F72AB62E430064E36D /* ExpenseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C6F62AB62E430064E36D /* ExpenseCardView.swift */; };
+		A5B1C6FA2AB6487E0064E36D /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A5B1C6F92AB6487E0064E36D /* Algorithms */; };
 		A5E68D812A6F0C0400AF2F9D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D802A6F0C0400AF2F9D /* TabButton.swift */; };
 		A5E68D832A6F0F0F00AF2F9D /* CustomCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D822A6F0F0F00AF2F9D /* CustomCorners.swift */; };
 		A5E68D872A70809800AF2F9D /* FamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D862A70809800AF2F9D /* FamilyView.swift */; };
@@ -118,6 +121,8 @@
 		A5A7DAAD2A74B8E200A66BFD /* BankDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankDetails.swift; sourceTree = "<group>"; };
 		A5A7DAAF2A74BA6A00A66BFD /* ParentMainList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentMainList.swift; sourceTree = "<group>"; };
 		A5B121272A788FCF00A7C819 /* BankDetailsChild.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankDetailsChild.swift; sourceTree = "<group>"; };
+		A5B1C6F42AB625C30064E36D /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
+		A5B1C6F62AB62E430064E36D /* ExpenseCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCardView.swift; sourceTree = "<group>"; };
 		A5E68D802A6F0C0400AF2F9D /* TabButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabButton.swift; sourceTree = "<group>"; };
 		A5E68D822A6F0F0F00AF2F9D /* CustomCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCorners.swift; sourceTree = "<group>"; };
 		A5E68D862A70809800AF2F9D /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
@@ -135,6 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5B1C6FA2AB6487E0064E36D /* Algorithms in Frameworks */,
 				A59C77BF2A61E4BA008275D5 /* FirebaseDatabaseSwift in Frameworks */,
 				A59C77B22A61E1DB008275D5 /* FirebaseDatabase in Frameworks */,
 				A59C77B42A61E1DB008275D5 /* FirebaseFirestore in Frameworks */,
@@ -177,6 +183,7 @@
 				A5A7DAAD2A74B8E200A66BFD /* BankDetails.swift */,
 				A5A7DAAF2A74BA6A00A66BFD /* ParentMainList.swift */,
 				A59B29692A7D76E700D839E1 /* RecurringTransaction.swift */,
+				A5B1C6F42AB625C30064E36D /* AddExpenseView.swift */,
 			);
 			path = Parent;
 			sourceTree = "<group>";
@@ -325,6 +332,7 @@
 				A56E20472A81964300DB2696 /* BarView.swift */,
 				A5F07D492A8EA500007FE4AB /* BarViewPos.swift */,
 				A5F07D4D2A8EA55E007FE4AB /* BarViewNeg.swift */,
+				A5B1C6F62AB62E430064E36D /* ExpenseCardView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -354,6 +362,7 @@
 				A59C77BE2A61E4BA008275D5 /* FirebaseDatabaseSwift */,
 				A59C77C02A61E4BA008275D5 /* FirebaseFirestoreSwift */,
 				A50A6CD42A69F6B4002A3930 /* SDWebImageSwiftUI */,
+				A5B1C6F92AB6487E0064E36D /* Algorithms */,
 			);
 			productName = "ios-app2";
 			productReference = A59C77712A5F824E008275D5 /* ios-app2.app */;
@@ -431,6 +440,7 @@
 				A59C77AC2A61E1DB008275D5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A59C77BD2A61E4BA008275D5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A50A6CD32A69F6B4002A3930 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+				A5B1C6F82AB6487E0064E36D /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = A59C77722A5F824E008275D5 /* Products */;
 			projectDirPath = "";
@@ -502,6 +512,7 @@
 				A59B296A2A7D76E700D839E1 /* RecurringTransaction.swift in Sources */,
 				A59C77BA2A61E2B3008275D5 /* LoadingView.swift in Sources */,
 				A5A7DAA42A74980D00A66BFD /* BankTabButton.swift in Sources */,
+				A5B1C6F52AB625C30064E36D /* AddExpenseView.swift in Sources */,
 				A50A6CD72A6B137D002A3930 /* ParentMain.swift in Sources */,
 				A5F07D4E2A8EA55E007FE4AB /* BarViewNeg.swift in Sources */,
 				A50A6CCC2A69D466002A3930 /* Home.swift in Sources */,
@@ -514,6 +525,7 @@
 				A59C77A52A5F8288008275D5 /* Extensions.swift in Sources */,
 				A5E68D812A6F0C0400AF2F9D /* TabButton.swift in Sources */,
 				A53A2A752A6EEE54005BD8EE /* ChildLoginView.swift in Sources */,
+				A5B1C6F72AB62E430064E36D /* ExpenseCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,6 +887,14 @@
 				minimumVersion = 10.12.0;
 			};
 		};
+		A5B1C6F82AB6487E0064E36D /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -917,6 +937,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A59C77AC2A61E1DB008275D5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestoreSwift;
+		};
+		A5B1C6F92AB6487E0064E36D /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A5B1C6F82AB6487E0064E36D /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

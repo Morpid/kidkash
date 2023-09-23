@@ -289,11 +289,11 @@ struct NewChildAccountView: View {
 
                 let ChildUser = ChildUser(username: ChildUsername, userProfileURL: downloadURL, banks: [
 
-                    Bank(name: "Savings", amount: 0.00, transactionHistoryName: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
+                    Bank(name: "Savings", amount: 0.00, transactionHistoryName: [], transactionHistorySubTitle: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
                     
-                    Bank(name: "Spending", amount: 0.00, transactionHistoryName: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
+                    Bank(name: "Spending", amount: 0.00, transactionHistoryName: [], transactionHistorySubTitle: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
                     
-                    Bank(name: "Charity", amount: 0.00, transactionHistoryName: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
+                    Bank(name: "Charity", amount: 0.00, transactionHistoryName: [], transactionHistorySubTitle: [], transactionHistoryAmount: [], transactionHistoryDate: [], amountHistoryAmount: [0.00], amountHistoryDate: [Date.now]),
                     
                 ], parentUID: userUID, lastUpdated: Date.now, RecurringTransactions: [])
 
