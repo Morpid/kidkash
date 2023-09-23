@@ -17,7 +17,6 @@
 		A50A6CD92A6C607A002A3930 /* ChildUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD82A6C607A002A3930 /* ChildUser.swift */; };
 		A53A2A752A6EEE54005BD8EE /* ChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */; };
 		A53A2A772A6F064F005BD8EE /* ParentChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */; };
-		A56E20482A81964300DB2696 /* BarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56E20472A81964300DB2696 /* BarView.swift */; };
 		A59B296A2A7D76E700D839E1 /* RecurringTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59B29692A7D76E700D839E1 /* RecurringTransaction.swift */; };
 		A59C77752A5F824E008275D5 /* ios_app2App.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59C77742A5F824E008275D5 /* ios_app2App.swift */; };
 		A59C77772A5F824E008275D5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59C77762A5F824E008275D5 /* ContentView.swift */; };
@@ -61,8 +60,6 @@
 		A5E68D8D2A708A5B00AF2F9D /* ChildReusableProfileContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D8C2A708A5B00AF2F9D /* ChildReusableProfileContent.swift */; };
 		A5E68D8F2A709F6000AF2F9D /* NewChildAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D8E2A709F6000AF2F9D /* NewChildAccountView.swift */; };
 		A5E68D912A70A82F00AF2F9D /* LoginCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D902A70A82F00AF2F9D /* LoginCode.swift */; };
-		A5F07D4A2A8EA500007FE4AB /* BarViewPos.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F07D492A8EA500007FE4AB /* BarViewPos.swift */; };
-		A5F07D4E2A8EA55E007FE4AB /* BarViewNeg.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F07D4D2A8EA55E007FE4AB /* BarViewNeg.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,7 +89,6 @@
 		A50A6CD82A6C607A002A3930 /* ChildUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildUser.swift; sourceTree = "<group>"; };
 		A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginView.swift; sourceTree = "<group>"; };
 		A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentChildLoginView.swift; sourceTree = "<group>"; };
-		A56E20472A81964300DB2696 /* BarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarView.swift; sourceTree = "<group>"; };
 		A59B29692A7D76E700D839E1 /* RecurringTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringTransaction.swift; sourceTree = "<group>"; };
 		A59C77712A5F824E008275D5 /* ios-app2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-app2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A59C77742A5F824E008275D5 /* ios_app2App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ios_app2App.swift; sourceTree = "<group>"; };
@@ -131,8 +127,6 @@
 		A5E68D8C2A708A5B00AF2F9D /* ChildReusableProfileContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildReusableProfileContent.swift; sourceTree = "<group>"; };
 		A5E68D8E2A709F6000AF2F9D /* NewChildAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChildAccountView.swift; sourceTree = "<group>"; };
 		A5E68D902A70A82F00AF2F9D /* LoginCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCode.swift; sourceTree = "<group>"; };
-		A5F07D492A8EA500007FE4AB /* BarViewPos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarViewPos.swift; sourceTree = "<group>"; };
-		A5F07D4D2A8EA55E007FE4AB /* BarViewNeg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarViewNeg.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -329,9 +323,6 @@
 				A53A2A6C2A6CAD4A005BD8EE /* Parent */,
 				A5E68D802A6F0C0400AF2F9D /* TabButton.swift */,
 				A5E68D822A6F0F0F00AF2F9D /* CustomCorners.swift */,
-				A56E20472A81964300DB2696 /* BarView.swift */,
-				A5F07D492A8EA500007FE4AB /* BarViewPos.swift */,
-				A5F07D4D2A8EA55E007FE4AB /* BarViewNeg.swift */,
 				A5B1C6F62AB62E430064E36D /* ExpenseCardView.swift */,
 			);
 			path = Main;
@@ -487,7 +478,6 @@
 			files = (
 				A5A7DAAC2A74B8CD00A66BFD /* ReoccuringTransactionsView.swift in Sources */,
 				A50A6CCA2A68D0AE002A3930 /* SideMenu.swift in Sources */,
-				A56E20482A81964300DB2696 /* BarView.swift in Sources */,
 				A5E68D8B2A708A4F00AF2F9D /* ChildProfileView.swift in Sources */,
 				A5A7DAA62A74993D00A66BFD /* BankView.swift in Sources */,
 				A5E68D8F2A709F6000AF2F9D /* NewChildAccountView.swift in Sources */,
@@ -500,7 +490,6 @@
 				A59C77C52A61F214008275D5 /* MainView.swift in Sources */,
 				A5A7DAAE2A74B8E200A66BFD /* BankDetails.swift in Sources */,
 				A5E68D8D2A708A5B00AF2F9D /* ChildReusableProfileContent.swift in Sources */,
-				A5F07D4A2A8EA500007FE4AB /* BarViewPos.swift in Sources */,
 				A5E68D832A6F0F0F00AF2F9D /* CustomCorners.swift in Sources */,
 				A5B121282A788FCF00A7C819 /* BankDetailsChild.swift in Sources */,
 				A59C77752A5F824E008275D5 /* ios_app2App.swift in Sources */,
@@ -514,7 +503,6 @@
 				A5A7DAA42A74980D00A66BFD /* BankTabButton.swift in Sources */,
 				A5B1C6F52AB625C30064E36D /* AddExpenseView.swift in Sources */,
 				A50A6CD72A6B137D002A3930 /* ParentMain.swift in Sources */,
-				A5F07D4E2A8EA55E007FE4AB /* BarViewNeg.swift in Sources */,
 				A50A6CCC2A69D466002A3930 /* Home.swift in Sources */,
 				A5E68D912A70A82F00AF2F9D /* LoginCode.swift in Sources */,
 				A50A6CD22A69F529002A3930 /* ReuseableProfileContent.swift in Sources */,

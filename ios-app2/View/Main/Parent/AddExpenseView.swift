@@ -14,7 +14,6 @@ struct AddExpenseView: View {
     
     @State private var title: String = ""
     @State private var subTitle: String = ""
-    @State private var date: Date = .init()
     @State private var amount: Double = 0
     
     @State var bankArray: Int
@@ -38,26 +37,106 @@ struct AddExpenseView: View {
             
             List {
                 
-                Picker("Expense Type", selection: $selectedExpenseType) {
-                    Text("Expense").tag("Expense")
-                    Text("Payment").tag("Payment")
-                    Text("Transfer").tag("Transfer")
+                
+                HStack {
+                    
+                    VStack {
+                        
+                        Text("Expense")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 5)
+                            .onTapGesture {
+                                withAnimation {
+                                    selectedExpenseType = "Expense"
+                                }
+                            }
+                        
+                        if selectedExpenseType == "Expense" {
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(height: 5)
+                                .foregroundStyle(Color.blue.opacity(0.7))
+                                .padding(.horizontal)
+                        } else {
+                            RoundedRectangle(cornerRadius: 2)
+                                .frame(height: 3)
+                                .foregroundStyle(Color.gray.opacity(0.7))
+                                .padding(.horizontal)
+                        }
+                        
+                    }
+                    
+                    Spacer()
+                    
+                    VStack {
+                        
+                        Text("Payment")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 5)
+                            .onTapGesture {
+                                withAnimation {
+                                    selectedExpenseType = "Payment"
+                                }
+                            }
+                        
+                        if selectedExpenseType == "Payment" {
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(height: 5)
+                                .foregroundStyle(Color.blue.opacity(0.7))
+                                .padding(.horizontal)
+                        } else {
+                            RoundedRectangle(cornerRadius: 2)
+                                .frame(height: 3)
+                                .foregroundStyle(Color.gray.opacity(0.7))
+                                .padding(.horizontal)
+                        }
+                        
+                    }
+                    
+                    Spacer()
+                    
+                    VStack {
+                        
+                        Text("Transfer")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 5)
+                            .onTapGesture {
+                                withAnimation {
+                                    selectedExpenseType = "Transfer"
+                                }
+                            }
+                        
+                        if selectedExpenseType == "Transfer" {
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(height: 5)
+                                .foregroundStyle(Color.blue.opacity(0.7))
+                                .padding(.horizontal)
+                        } else {
+                            RoundedRectangle(cornerRadius: 2)
+                                .frame(height: 3)
+                                .foregroundStyle(Color.gray.opacity(0.7))
+                                .padding(.horizontal)
+                        }
+                        
+                    }
                 }
-                .pickerStyle(.menu)
+                .listRowBackground(Color.clear)
                 
                 
                 
-                Section("Title") {
-                    TextField("Magic Keyboard", text: $title)
-                }
                 
-                Section("Description") {
-                    TextField("Bought a keyboard at the Apple Store", text: $subTitle)
+                Section("") {
+                    TextField("Title", text: $title)
+                        .listRowBackground(Color.clear)
+                        .border(1, .black)
+                
+                    TextField("Description", text: $subTitle)
+                        .listRowBackground(Color.clear)
+                        .border(1, .black)
                 }
                 
                 if selectedExpenseType == "Expense" {
                     
-                    Section("Amount Spent") {
+                    Section("Amount") {
                         HStack(spacing: 4) {
                             Text("$")
                                 .fontWeight(.semibold)
@@ -65,10 +144,12 @@ struct AddExpenseView: View {
                             TextField("0.00", value: $amount, formatter: formatter)
                                 .keyboardType(.decimalPad)
                         }
+                        .listRowBackground(Color.clear)
+                        .border(1, .black)
                     }
                     
                 } else if selectedExpenseType == "Payment" {
-                    Section("Amount Paid") {
+                    Section("Amount") {
                         HStack(spacing: 4) {
                             Text("$")
                                 .fontWeight(.semibold)
@@ -76,6 +157,8 @@ struct AddExpenseView: View {
                             TextField("0.00", value: $amount, formatter: formatter)
                                 .keyboardType(.decimalPad)
                         }
+                        .listRowBackground(Color.clear)
+                        .border(1, .black)
                     }
                 } else {
                     
@@ -87,6 +170,8 @@ struct AddExpenseView: View {
                             TextField("0.00", value: $amount, formatter: formatter)
                                 .keyboardType(.decimalPad)
                         }
+                        .listRowBackground(Color.clear)
+                        .border(1, .black)
                         
                         if !loading_bank_names {
                             
@@ -96,6 +181,8 @@ struct AddExpenseView: View {
                                 }
                             }
                             .pickerStyle(.menu)
+                            .listRowBackground(Color.clear)
+                            .border(1, .black)
                             
                             Picker("To", selection: $selected_bank_to) {
                                 ForEach(0..<bank_names.count) { i in
@@ -103,17 +190,15 @@ struct AddExpenseView: View {
                                 }
                             }
                             .pickerStyle(.menu)
+                            .listRowBackground(Color.clear)
+                            .border(1, .black)
                             
                         } else {
                             ProgressView()
+                                .listRowBackground(Color.clear)
+                                .border(1, .black)
                         }
                     }
-                }
-                
-                Section("Date") {
-                    DatePicker("", selection: $date, displayedComponents: [.date])
-                        .datePickerStyle(.graphical)
-                        .labelsHidden()
                 }
                 
                 

@@ -276,7 +276,11 @@ struct BankDetails: View {
                     }
                 }
                 
+                
+                
             }
+            
+            
             
         }
     
@@ -304,15 +308,29 @@ struct BankDetails: View {
                             )
                             .foregroundStyle(.mint.gradient.opacity(0.2))
                             
-                            PointMark(
-                                x: .value("Index", 9),
-                                y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
-                            )
-                            .foregroundStyle(.green)
-                            .annotation(position: .top) {
-                                Text("now")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray)
+                            if bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)] > bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 2)] {
+                                
+                                PointMark(
+                                    x: .value("Index", 10),
+                                    y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .top) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                            } else {
+                                PointMark(
+                                    x: .value("Index", 10),
+                                    y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .bottom) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
                             }
                             
                             if let currentActiveItem, currentActiveItem.index == index {
@@ -354,7 +372,7 @@ struct BankDetails: View {
                     .chartYScale(domain: 0...(max!))
                     .chartXAxis(.hidden)
                     .chartYAxis(.hidden)
-                    .chartXScale(domain: 0...(bank.amountHistoryAmount.count - 1))
+                    .chartXScale(domain: 0...10)
                     .chartOverlay { proxy in
                         GeometryReader { innerProxy in
                             Rectangle()
@@ -365,11 +383,11 @@ struct BankDetails: View {
                                             let location = value.location
                                             
                                             if let index_value: Int = proxy.value(atX: location.x) {
-                                                if index_value <= 9 && index_value >= 0 {
+                                                if index_value <= 10 && index_value >= 0 {
                                                     
                                                     if index_value == 0 {
                                                         AnnotationPos = .topTrailing
-                                                    } else if index_value == 9 {
+                                                    } else if index_value == 10 {
                                                         AnnotationPos = .topLeading
                                                     } else {
                                                         AnnotationPos = .top
@@ -402,15 +420,30 @@ struct BankDetails: View {
                             )
                             .foregroundStyle(.mint.gradient.opacity(0.2))
                             
-                            PointMark(
-                                x: .value("Index", (bank.amountHistoryAmount.count - 1)),
-                                y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
-                            )
-                            .foregroundStyle(.green)
-                            .annotation(position: .top) {
-                                Text("now")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray)
+                            if bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)] > bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 2)] {
+                                
+                                PointMark(
+                                    x: .value("Index", (bank.amountHistoryAmount.count - 1)),
+                                    y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .top) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                                
+                            } else {
+                                PointMark(
+                                    x: .value("Index", (bank.amountHistoryAmount.count - 1)),
+                                    y: .value("Value", bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .bottom) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
                             }
                             
                             if let currentActiveItem, currentActiveItem.index == index {
