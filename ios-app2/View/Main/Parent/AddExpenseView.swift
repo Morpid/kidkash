@@ -16,6 +16,8 @@ struct AddExpenseView: View {
     @State private var subTitle: String = ""
     @State private var amount: Double = 0
     
+    @State private var percent_amount: Int = 1
+    
     @State var bankArray: Int
     @State var username: String
     
@@ -27,116 +29,141 @@ struct AddExpenseView: View {
     
     @State var loading_bank_names: Bool = true
     
-    @State var selected_bank_to: String = ""
-    @State var selected_bank_from: String = ""
+    @Namespace var animation
+    
+    @State var selected_bank_to: String = "Savings"
+    @State var selected_bank_from: String = "Savings"
     
     var body: some View {
-        NavigationStack {
-            
-            
-            
-            List {
+        GeometryReader { proxy in
+            NavigationStack {
                 
                 
-                HStack {
+                
+                VStack {
                     
-                    VStack {
+                    
+                    HStack {
                         
-                        Text("Expense")
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 5)
-                            .onTapGesture {
-                                withAnimation {
-                                    selectedExpenseType = "Expense"
+                        VStack {
+                            
+                            Text("Expense")
+                                .padding(.vertical, 5)
+                            //.padding(.horizontal)
+                                .onTapGesture {
+                                    withAnimation {
+                                        selectedExpenseType = "Expense"
+                                    }
                                 }
+                                .font(.callout)
+                            
+                            if selectedExpenseType == "Expense" {
+                                Rectangle()
+                                    .frame(width: proxy.size.width / 4, height: 1)
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal)
+                                    .matchedGeometryEffect(id: "UNDERLINE", in: animation)
                             }
-                        
-                        if selectedExpenseType == "Expense" {
-                            RoundedRectangle(cornerRadius: 3)
-                                .frame(height: 5)
-                                .foregroundStyle(Color.blue.opacity(0.7))
-                                .padding(.horizontal)
-                        } else {
-                            RoundedRectangle(cornerRadius: 2)
-                                .frame(height: 3)
-                                .foregroundStyle(Color.gray.opacity(0.7))
-                                .padding(.horizontal)
+                            
                         }
                         
-                    }
-                    
-                    Spacer()
-                    
-                    VStack {
+                        Spacer()
                         
-                        Text("Payment")
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 5)
-                            .onTapGesture {
-                                withAnimation {
-                                    selectedExpenseType = "Payment"
+                        VStack {
+                            
+                            Text("Payment")
+                                .padding(.vertical, 5)
+                            //.padding(.horizontal)
+                                .onTapGesture {
+                                    withAnimation {
+                                        selectedExpenseType = "Payment"
+                                    }
                                 }
+                                .font(.callout)
+                            
+                            if selectedExpenseType == "Payment" {
+                                Rectangle()
+                                    .frame(width: proxy.size.width / 4, height: 1)
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal)
+                                    .matchedGeometryEffect(id: "UNDERLINE", in: animation)
                             }
-                        
-                        if selectedExpenseType == "Payment" {
-                            RoundedRectangle(cornerRadius: 3)
-                                .frame(height: 5)
-                                .foregroundStyle(Color.blue.opacity(0.7))
-                                .padding(.horizontal)
-                        } else {
-                            RoundedRectangle(cornerRadius: 2)
-                                .frame(height: 3)
-                                .foregroundStyle(Color.gray.opacity(0.7))
-                                .padding(.horizontal)
+                            
                         }
                         
-                    }
-                    
-                    Spacer()
-                    
-                    VStack {
+                        Spacer()
                         
-                        Text("Transfer")
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 5)
-                            .onTapGesture {
-                                withAnimation {
-                                    selectedExpenseType = "Transfer"
+                        VStack {
+                            
+                            Text("Transfer")
+                                .padding(.vertical, 5)
+                            //.padding(.horizontal)
+                                .onTapGesture {
+                                    withAnimation {
+                                        selectedExpenseType = "Transfer"
+                                    }
                                 }
+                                .font(.callout)
+                            
+                            if selectedExpenseType == "Transfer" {
+                                Rectangle()
+                                    .frame(width: proxy.size.width / 4, height: 1)
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal)
+                                    .matchedGeometryEffect(id: "UNDERLINE", in: animation)
                             }
-                        
-                        if selectedExpenseType == "Transfer" {
-                            RoundedRectangle(cornerRadius: 3)
-                                .frame(height: 5)
-                                .foregroundStyle(Color.blue.opacity(0.7))
-                                .padding(.horizontal)
-                        } else {
-                            RoundedRectangle(cornerRadius: 2)
-                                .frame(height: 3)
-                                .foregroundStyle(Color.gray.opacity(0.7))
-                                .padding(.horizontal)
+                            
                         }
                         
+                        Spacer()
+                        
+                        VStack {
+                            
+                            Text("Interest")
+                                .padding(.vertical, 5)
+                            //.padding(.horizontal)
+                                .onTapGesture {
+                                    withAnimation {
+                                        selectedExpenseType = "Interest"
+                                    }
+                                }
+                                .font(.callout)
+                            
+                            if selectedExpenseType == "Interest" {
+                                Rectangle()
+                                    .frame(width: proxy.size.width / 4, height: 1)
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal)
+                                    .matchedGeometryEffect(id: "UNDERLINE", in: animation)
+                            }
+                            
+                        }
                     }
-                }
-                .listRowBackground(Color.clear)
-                
-                
-                
-                
-                Section("") {
-                    TextField("Title", text: $title)
-                        .listRowBackground(Color.clear)
-                        .border(1, .black)
-                
-                    TextField("Description", text: $subTitle)
-                        .listRowBackground(Color.clear)
-                        .border(1, .black)
-                }
-                
-                if selectedExpenseType == "Expense" {
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .padding(.bottom)
                     
-                    Section("Amount") {
+                    
+                    
+                    
+                    Section("") {
+                        TextField("Title", text: $title)
+                            .listRowBackground(Color.clear)
+                            .border(1, .black)
+                            .listRowSeparator(.hidden)
+                        
+                        
+                        TextField("Description", text: $subTitle)
+                            .listRowBackground(Color.clear)
+                            .border(1, .black)
+                            .listRowSeparator(.hidden)
+                    }
+                    
+                    Divider()
+                    
+                    if selectedExpenseType == "Expense" {
+                        
+                        
                         HStack(spacing: 4) {
                             Text("$")
                                 .fontWeight(.semibold)
@@ -146,10 +173,10 @@ struct AddExpenseView: View {
                         }
                         .listRowBackground(Color.clear)
                         .border(1, .black)
-                    }
-                    
-                } else if selectedExpenseType == "Payment" {
-                    Section("Amount") {
+                        
+                        
+                    } else if selectedExpenseType == "Payment" {
+                        
                         HStack(spacing: 4) {
                             Text("$")
                                 .fontWeight(.semibold)
@@ -159,10 +186,17 @@ struct AddExpenseView: View {
                         }
                         .listRowBackground(Color.clear)
                         .border(1, .black)
-                    }
-                } else {
-                    
-                    Section("Amount") {
+                        
+                    } else if selectedExpenseType == "Interest" {
+                        
+                        
+                        Stepper("\(percent_amount)%", value: $percent_amount, in: 1...100)
+                            .listRowBackground(Color.clear)
+                            .border(1, .black)
+                        
+                    } else {
+                        
+                        
                         HStack(spacing: 4) {
                             Text("$")
                                 .fontWeight(.semibold)
@@ -172,62 +206,77 @@ struct AddExpenseView: View {
                         }
                         .listRowBackground(Color.clear)
                         .border(1, .black)
+                        .listRowSeparator(.hidden)
                         
                         if !loading_bank_names {
                             
-                            Picker("From", selection: $selected_bank_from) {
-                                ForEach(0..<bank_names.count) { i in
-                                    Text(bank_names[i]).tag(bank_names[i])
+                            HStack {
+                                
+                                Picker("From", selection: $selected_bank_from) {
+                                    ForEach(0..<bank_names.count) { i in
+                                        Text(bank_names[i]).tag(bank_names[i])
+                                    }
                                 }
-                            }
-                            .pickerStyle(.menu)
-                            .listRowBackground(Color.clear)
-                            .border(1, .black)
-                            
-                            Picker("To", selection: $selected_bank_to) {
-                                ForEach(0..<bank_names.count) { i in
-                                    Text(bank_names[i]).tag(bank_names[i])
+                                .pickerStyle(.menu)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                
+                                Spacer()
+                                
+                                Text("to")
+                                
+                                Spacer()
+                                
+                                Picker("To", selection: $selected_bank_to) {
+                                    ForEach(0..<bank_names.count) { i in
+                                        Text(bank_names[i]).tag(bank_names[i])
+                                    }
                                 }
+                                .pickerStyle(.menu)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                
                             }
-                            .pickerStyle(.menu)
-                            .listRowBackground(Color.clear)
                             .border(1, .black)
                             
                         } else {
                             ProgressView()
                                 .listRowBackground(Color.clear)
                                 .border(1, .black)
+                                .listRowSeparator(.hidden)
                         }
+                        
                     }
+                    
+                    Spacer()
                 }
-                
-                
-            }
-            .navigationTitle("Add \(selectedExpenseType)")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
+                .padding()
+                .navigationTitle("Add \(selectedExpenseType)")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .tint(.black)
                     }
-                    .tint(.red)
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") {
-                        if selectedExpenseType == "Transfer" {
-                            Task {
-                                await sendTransferFirebase(from: selected_bank_from, to: selected_bank_to)
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Add") {
+                            if selectedExpenseType == "Transfer" {
+                                Task {
+                                    await sendTransferFirebase(from: selected_bank_from, to: selected_bank_to)
+                                }
+                            } else {
+                                addExpense()
                             }
-                        } else {
-                            addExpense()
                         }
+                        .disabled(isAddButtonDisabled)
                     }
-                    .disabled(isAddButtonDisabled)
                 }
-            }
-            .onAppear {
-                Task {
-                    await getAllBanks()
+                .onAppear {
+                    Task {
+                        await getAllBanks()
+                    }
                 }
             }
         }

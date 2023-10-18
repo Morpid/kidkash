@@ -110,6 +110,8 @@ struct BankDetails: View {
                                     
                                 }
                                 
+                                
+                                
                                 Spacer()
                                 
                                 Divider()
@@ -130,13 +132,42 @@ struct BankDetails: View {
                         
                     }
                     
+//                    Section() {
+//                        HStack {
+//                            Text("Transactions")
+//                                .font(.callout.bold())
+//                                .foregroundStyle(.black)
+//                            
+//                            Text("Pull down to refresh \(Image(systemName: "arrow.down"))")
+//                                .font(.caption2)
+//                                .foregroundStyle(.gray)
+//                        }
+//                    }
+                        
+                        
                     
                         
                     Section() {
+                        
+                        HStack() {
+                            Text("Transactions")
+                                .font(.title3.bold())
+                                .foregroundStyle(.black)
+                            
+                            Spacer()
+                            
+                            Text("Pull down to refresh \(Image(systemName: "arrow.down"))")
+                                .font(.caption)
+                                .foregroundStyle(.gray)
+                        }
+                        .padding(.vertical, 10)
+                            
                         ForEach(transaction_info) { transaction in
                             ExpenseCardView(title: transaction.name, sub_title: transaction.subtitle, date: transaction.date, amount: transaction.amount)
                         }
+                            
                     }
+                    
                         
                     
                 }
@@ -147,7 +178,7 @@ struct BankDetails: View {
                         Button {
                             show_expense_sheet.toggle()
                         } label: {
-                            Image(systemName: "plus.circle.fill")
+                            Image(systemName: "plus")
                         }
                     }
                 }
