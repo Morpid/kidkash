@@ -12,6 +12,7 @@
 		A50A6CCE2A69F373002A3930 /* Bank.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CCD2A69F373002A3930 /* Bank.swift */; };
 		A50A6CD72A6B137D002A3930 /* ParentMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD62A6B137D002A3930 /* ParentMain.swift */; };
 		A50A6CD92A6C607A002A3930 /* ChildUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD82A6C607A002A3930 /* ChildUser.swift */; };
+		A51463CA2C17EA66002CE3A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A51463C92C17EA66002CE3A1 /* GoogleService-Info.plist */; };
 		A531676E2AE9F8CE00E02D87 /* TransparentBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531676D2AE9F8CE00E02D87 /* TransparentBlurView.swift */; };
 		A53A2A752A6EEE54005BD8EE /* ChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */; };
 		A53A2A772A6F064F005BD8EE /* ParentChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */; };
@@ -27,7 +28,6 @@
 		A59C77A52A5F8288008275D5 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59C77A42A5F8288008275D5 /* Extensions.swift */; };
 		A59C77A72A5F8294008275D5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59C77A62A5F8294008275D5 /* LoginView.swift */; };
 		A59C77A92A5F829B008275D5 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59C77A82A5F829B008275D5 /* RegisterView.swift */; };
-		A59C77AB2A61E098008275D5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A59C77AA2A61E098008275D5 /* GoogleService-Info.plist */; };
 		A59C77AE2A61E1DB008275D5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A59C77AD2A61E1DB008275D5 /* FirebaseAnalytics */; };
 		A59C77B02A61E1DB008275D5 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A59C77AF2A61E1DB008275D5 /* FirebaseAuth */; };
 		A59C77B22A61E1DB008275D5 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = A59C77B12A61E1DB008275D5 /* FirebaseDatabase */; };
@@ -83,6 +83,7 @@
 		A50A6CCD2A69F373002A3930 /* Bank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bank.swift; sourceTree = "<group>"; };
 		A50A6CD62A6B137D002A3930 /* ParentMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentMain.swift; sourceTree = "<group>"; };
 		A50A6CD82A6C607A002A3930 /* ChildUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildUser.swift; sourceTree = "<group>"; };
+		A51463C92C17EA66002CE3A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A531676D2AE9F8CE00E02D87 /* TransparentBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentBlurView.swift; sourceTree = "<group>"; };
 		A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginView.swift; sourceTree = "<group>"; };
 		A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentChildLoginView.swift; sourceTree = "<group>"; };
@@ -101,7 +102,6 @@
 		A59C77A42A5F8288008275D5 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A59C77A62A5F8294008275D5 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A59C77A82A5F829B008275D5 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
-		A59C77AA2A61E098008275D5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A59C77B92A61E2B3008275D5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		A59C77BB2A61E40C008275D5 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		A59C77C22A61EC91008275D5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
@@ -238,7 +238,7 @@
 				A59C77742A5F824E008275D5 /* ios_app2App.swift */,
 				A59C77762A5F824E008275D5 /* ContentView.swift */,
 				A59C77782A5F8251008275D5 /* Assets.xcassets */,
-				A59C77AA2A61E098008275D5 /* GoogleService-Info.plist */,
+				A51463C92C17EA66002CE3A1 /* GoogleService-Info.plist */,
 				A59C777A2A5F8251008275D5 /* Preview Content */,
 			);
 			path = "ios-app2";
@@ -453,8 +453,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A59C777C2A5F8251008275D5 /* Preview Assets.xcassets in Resources */,
-				A59C77AB2A61E098008275D5 /* GoogleService-Info.plist in Resources */,
 				A59C77792A5F8251008275D5 /* Assets.xcassets in Resources */,
+				A51463CA2C17EA66002CE3A1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -688,11 +688,12 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -724,11 +725,12 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -786,9 +788,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R9AWQ9AU5;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LukaBaylis.ios-app2UITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2UITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
@@ -803,9 +806,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R9AWQ9AU5;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LukaBaylis.ios-app2UITests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2UITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
