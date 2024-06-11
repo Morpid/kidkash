@@ -70,6 +70,16 @@ extension View {
             }
     }
     
+    func border25(_ width: CGFloat, _ color: Color) -> some View {
+        self
+            .padding(.horizontal, 15)
+            .padding(.vertical, 10)
+            .background {
+                RoundedRectangle(cornerRadius: 25, style: .continuous)
+                    .stroke(color, lineWidth: width)
+            }
+    }
+    
     func borderWithoutPadding(_ width: CGFloat, _ color: Color) -> some View {
         self
             .background {

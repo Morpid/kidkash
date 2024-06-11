@@ -35,6 +35,9 @@ struct LoginView: View {
     @AppStorage("user_UID") var userUID: String = ""
     
     @State var isLoading: Bool = false
+    @Environment(\.dismiss) var dismiss
+    
+    @State var show_button: Bool = false
     
     var body: some View {
         if !register {
@@ -44,26 +47,52 @@ struct LoginView: View {
                     
                     HStack {
                         
-                        Text("Sign In")
-                            .foregroundStyle(.black)
-                            .font(.title)
-                            .bold()
-                            .padding()
-                            .padding([.leading, .top], 15)
+                        VStack(alignment: .leading) {
+                            
+                            Text("Sign In")
+                                .foregroundStyle(.black)
+                                .font(.title)
+                                .bold()
+                                .padding([.horizontal, .top])
+                                .padding([.leading, .top], 15)
+                            
+                            
+                            HStack {
+                                
+                                Text("or")
+                                    .foregroundStyle(.black)
+                                    .font(.callout)
+                                
+                                Button {
+                                    withAnimation(.bouncy(duration: 0.25)) {
+                                        register = true
+                                    }
+                                } label: {
+                                    Text("Create Account")
+                                        .foregroundStyle(.blue)
+                                        .font(.callout)
+                                }
+                                
+                            }
+                            .padding(.leading)
+                            .padding(.leading, 15)
+                            
+                        }
                         
                         Spacer()
                         
                         Button {
-                            withAnimation(.easeIn(duration: 0.1)) {
-                                register = true
-                            }
+                            dismiss()
                         } label: {
-                            Text("Don't have an account?")
+                            Image(systemName: "xmark.circle.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .font(.title)
                                 .foregroundStyle(.black)
-                                .bold()
+                                
                         }
-                        .padding()
-                        .padding([.trailing, .top], 15)
+                        //.padding(.top)
+                        .padding(.trailing, 20)
+                        
                     }
                     
                     Spacer()
@@ -73,91 +102,121 @@ struct LoginView: View {
                 
                 VStack {
                     
-//                    Button {
-//                        withAnimation(.easeIn(duration: 0.1)) {
-//                            register = true
-//                        }
-//                    } label: {
-//                        Text("Don't have an account?")
-//                            .foregroundStyle(.black)
-//                            .bold()
-//                    }
-//                    .vAlign(.top)
-//                    .hAlign(.trailing)
-                    
-//                    Text("Log In")
-//                        .font(.title)
-                    
                     HStack {
                         
-                        Image(systemName: "envelope.open.fill")
+                        Image(systemName: "at")
                             .foregroundStyle(.black)
                             .font(.title3)
                         
-                        
-                        
-                        TextField("Email", text: $emailID)
-                            .padding(.all, 5)
-                            .border(1, .black)
-                            .padding(.all, 5)
-                            .keyboardType(.emailAddress)
+                        VStack {
+                            
+                            TextField("Email", text: $emailID)
+                                .padding(.leading, 10)
+                                //.border(1, .mint)
+                                .padding(.top, 10)
+                                .keyboardType(.emailAddress)
+                                .onChange(of: emailID) { oldValue, newValue in
+                                    if !newValue.isEmpty {
+                                        if !password.isEmpty {
+                                            withAnimation {
+                                                show_button = true
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                show_button = false
+                                            }
+                                        }
+                                    } else {
+                                        withAnimation {
+                                            show_button = false
+                                        }
+                                    }
+                                }
+                                .onChange(of: password) { oldValue, newValue in
+                                    if !newValue.isEmpty {
+                                        if !emailID.isEmpty {
+                                            withAnimation {
+                                                show_button = true
+                                            }
+                                        } else {
+                                            withAnimation {
+                                                show_button = false
+                                            }
+                                        }
+                                    } else {
+                                        withAnimation {
+                                            show_button = false
+                                        }
+                                    }
+                                }
+                            
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundStyle(.black)
+                            
+                        }
                         
                     }
                     .padding(.horizontal, 30)
-                    .padding(.bottom, 5)
+                    .padding(.bottom, 15)
                     
                     HStack {
                         
-                        Image(systemName: "key.fill")
+                        Image(systemName: "lock")
                             .foregroundStyle(.black)
                             .font(.title3)
-                            .padding(.leading, 5)
                         
-                        
-                        SecureField("Password", text: $password)
-                            .padding(.all, 5)
-                            .border(1, .black)
-                            .padding(.all, 5)
-                            .padding(.leading, 6)
+                        VStack {
+                            
+                            SecureField("Password", text: $password)
+                                .padding(.top, 10)
+                                .padding(.leading, 10)
+                            
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundStyle(.black)
+                            
+                            
+                        }
                         
                         Button {
                             closeKeyboard()
                             showForgotPasswordAlert.toggle()
                         } label: {
-                            Image(systemName: "questionmark.circle.fill")
+                            Image(systemName: "questionmark")
                                 .foregroundStyle(.black)
                                 .font(.headline)
                         }
                         
                     }
                     .padding(.horizontal, 30)
-                    .padding(.bottom, 5)
+                    .padding(.bottom, 15)
                     
-                    
-                    Button {
-                        closeKeyboard()
-                        loginUser()
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                        } else {
-                            HStack {
-                                Text("Next")
-                                    .foregroundStyle(.black)
-                                
-                                Image(systemName: "chevron.right")
-                                    .foregroundStyle(.black)
+                    if show_button {
+                        
+                        Button {
+                            closeKeyboard()
+                            loginUser()
+                        } label: {
+                            if isLoading {
+                                ProgressView()
+                            } else {
+                                HStack {
+                                    Text("Next")
+                                        .foregroundStyle(.black)
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .foregroundStyle(.black)
+                                }
                             }
                         }
+                        
                     }
-                    .border(1, .black)
-                    
-                    
                     
                     
                     
                 }
-                .preferredColorScheme(.light)
+                //.preferredColorScheme(.light)
                 .onChange(of: keyboardHandler.keyboardHeight, { oldValue, newValue in
                     withAnimation(.spring(duration: 0.2)) {
                         keyboardHeight = newValue
@@ -166,7 +225,12 @@ struct LoginView: View {
                 .alert(forgotPasswordAlert, isPresented: $showForgotPasswordAlert) {
                     Button(role: .cancel, action: {}, label: { Text("Cancel") })
                     
-                    Button(role: .none, action: {showForgotPasswordSentAlert.toggle()}, label: { Text("Send Email") })
+                    Button {
+                        ResetPassword()
+                        
+                    } label: {
+                        Text("Send Email")
+                    }
                 }
                 .alert("Sent!", isPresented: $showForgotPasswordSentAlert) {
                     Button(role: .none, action: {}, label: { Text("OK") })
@@ -177,34 +241,61 @@ struct LoginView: View {
                     Text(errorMsg)
                 }
             }
+            .transition(.push(from: .leading))
             
         } else {
             ZStack {
+                
                 
                 VStack {
                     
                     HStack {
                         
-                        Text("Sign Up")
-                            .foregroundStyle(.black)
-                            .font(.title)
-                            .bold()
-                            .padding()
-                            .padding([.leading, .top], 15)
+                        VStack(alignment: .leading) {
+                            
+                            Text("Sign Up")
+                                .foregroundStyle(.black)
+                                .font(.title)
+                                .bold()
+                                .padding([.horizontal, .top])
+                                .padding([.leading, .top], 15)
+                            
+                            HStack {
+                                
+                                Text("or")
+                                    .foregroundStyle(.black)
+                                    .font(.callout)
+                                
+                                Button {
+                                    withAnimation(.bouncy(duration: 0.25)) {
+                                        register = false
+                                    }
+                                } label: {
+                                    Text("Log in")
+                                        .foregroundStyle(.blue)
+                                        .font(.callout)
+                                }
+                                
+                            }
+                            .padding(.leading)
+                            .padding(.leading, 15)
+                            
+                        }
                         
                         Spacer()
                         
                         Button {
-                            withAnimation(.easeIn(duration: 0.1)) {
-                                register = false
-                            }
+                            dismiss()
                         } label: {
-                            Text("Already have an account?")
+                            Image(systemName: "xmark.circle.fill")
+                                .symbolRenderingMode(.hierarchical)
+                                .font(.title)
                                 .foregroundStyle(.black)
-                                .bold()
+                                
                         }
-                        .padding()
-                        .padding([.trailing, .top], 15)
+                        //.padding(.top)
+                        .padding(.trailing, 20)
+                        
                     }
                     
                     Spacer()
@@ -213,6 +304,7 @@ struct LoginView: View {
                 
                 RegisterView()
             }
+            .transition(.push(from: .trailing))
         }
     }
     
@@ -236,7 +328,6 @@ struct LoginView: View {
         
         await MainActor.run(body: {
             userUID = userID
-            profileURL = user.userProfileURL
             parent_parentLogStatus = true
         })
     }
@@ -253,6 +344,7 @@ struct LoginView: View {
         Task {
             do {
                 try await Auth.auth().sendPasswordReset(withEmail: emailID)
+                showForgotPasswordSentAlert.toggle()
             } catch {
                 await setError(error)
             }

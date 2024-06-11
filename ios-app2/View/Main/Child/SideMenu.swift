@@ -29,6 +29,8 @@ struct SideMenu: View {
     
     @AppStorage("log_status") var logStatus: Bool = false
     
+    @Binding var SelectedBanks: String
+    
     @State var showLogoutVerification: Bool = false
     
     @State var proxy: GeometryProxy
@@ -59,18 +61,12 @@ struct SideMenu: View {
                     
                     ScrollView {
                         
-                        TabButton(image: "house", title: "Home", selectedTab: $selectedTab, showMenu: $showMenu, proxy: proxy, animation: animation)
-                        
-                        Divider()
-                        
+                        TabButton(image: "building.columns", title: "Bank Amounts", selectedTab: $selectedTab, showMenu: $showMenu, proxy: proxy, selectedBank: $SelectedBanks, animation: animation)
                         
                         ForEach(0..<user!.banks.count) { i in
-                            BankTabButton(BankAmount: user!.banks[i].amount, BankTitle: user!.banks[i].name, title: "Bank", selectedTab: $selectedTab, showMenu: $showMenu, proxy: proxy, animation: animation)
+                            BankTabButton(BankAmount: user!.banks[i].amount, BankTitle: user!.banks[i].name, title: "Bank", selectedTab: $selectedTab, SelectedBank: $SelectedBanks, showMenu: $showMenu, proxy: proxy, animation: animation)
                         }
                         
-                        Divider()
-                        
-                        TabButton(image: "person", title: "Profile", selectedTab: $selectedTab, showMenu: $showMenu, proxy: proxy, animation: animation)
                     }
                     
                 } else {

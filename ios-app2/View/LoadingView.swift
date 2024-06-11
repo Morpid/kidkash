@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct LoadingView: View {
-    
     @Binding var show: Bool
     
     var body: some View {
@@ -22,10 +21,27 @@ struct LoadingView: View {
                     ProgressView()
                         .padding(15)
                         .background(.white, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                        .preferredColorScheme(.light)
+                        //.preferredColorScheme(.light)
                 }
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: show)
+    }
+    
+}
+
+extension CGFloat {
+    static func random() -> CGFloat {
+        return CGFloat(arc4random()) / CGFloat(UInt32.max)
+    }
+}
+
+extension UIColor {
+    static func random() -> UIColor {
+        return UIColor(
+           red:   .random(),
+           green: .random(),
+           blue:  .random(),
+           alpha: 1.0
+        )
     }
 }

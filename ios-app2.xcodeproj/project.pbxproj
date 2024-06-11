@@ -10,11 +10,9 @@
 		A50A6CCA2A68D0AE002A3930 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CC92A68D0AE002A3930 /* SideMenu.swift */; };
 		A50A6CCC2A69D466002A3930 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CCB2A69D466002A3930 /* Home.swift */; };
 		A50A6CCE2A69F373002A3930 /* Bank.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CCD2A69F373002A3930 /* Bank.swift */; };
-		A50A6CD02A69F514002A3930 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CCF2A69F514002A3930 /* ProfileView.swift */; };
-		A50A6CD22A69F529002A3930 /* ReuseableProfileContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD12A69F529002A3930 /* ReuseableProfileContent.swift */; };
-		A50A6CD52A69F6B4002A3930 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A50A6CD42A69F6B4002A3930 /* SDWebImageSwiftUI */; };
 		A50A6CD72A6B137D002A3930 /* ParentMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD62A6B137D002A3930 /* ParentMain.swift */; };
 		A50A6CD92A6C607A002A3930 /* ChildUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50A6CD82A6C607A002A3930 /* ChildUser.swift */; };
+		A531676E2AE9F8CE00E02D87 /* TransparentBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A531676D2AE9F8CE00E02D87 /* TransparentBlurView.swift */; };
 		A53A2A752A6EEE54005BD8EE /* ChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */; };
 		A53A2A772A6F064F005BD8EE /* ParentChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */; };
 		A59B296A2A7D76E700D839E1 /* RecurringTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A59B29692A7D76E700D839E1 /* RecurringTransaction.swift */; };
@@ -52,14 +50,14 @@
 		A5B1C6F52AB625C30064E36D /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C6F42AB625C30064E36D /* AddExpenseView.swift */; };
 		A5B1C6F72AB62E430064E36D /* ExpenseCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B1C6F62AB62E430064E36D /* ExpenseCardView.swift */; };
 		A5B1C6FA2AB6487E0064E36D /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = A5B1C6F92AB6487E0064E36D /* Algorithms */; };
+		A5B30E762AFB4D35006E5FFC /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5B30E752AFB4D35006E5FFC /* SDWebImageSwiftUI */; };
 		A5E68D812A6F0C0400AF2F9D /* TabButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D802A6F0C0400AF2F9D /* TabButton.swift */; };
 		A5E68D832A6F0F0F00AF2F9D /* CustomCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D822A6F0F0F00AF2F9D /* CustomCorners.swift */; };
 		A5E68D872A70809800AF2F9D /* FamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D862A70809800AF2F9D /* FamilyView.swift */; };
 		A5E68D892A7080A800AF2F9D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D882A7080A800AF2F9D /* SettingsView.swift */; };
-		A5E68D8B2A708A4F00AF2F9D /* ChildProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D8A2A708A4F00AF2F9D /* ChildProfileView.swift */; };
-		A5E68D8D2A708A5B00AF2F9D /* ChildReusableProfileContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D8C2A708A5B00AF2F9D /* ChildReusableProfileContent.swift */; };
 		A5E68D8F2A709F6000AF2F9D /* NewChildAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D8E2A709F6000AF2F9D /* NewChildAccountView.swift */; };
 		A5E68D912A70A82F00AF2F9D /* LoginCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5E68D902A70A82F00AF2F9D /* LoginCode.swift */; };
+		A5F166972AEC952F00B1B5A7 /* AllBanksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F166962AEC952F00B1B5A7 /* AllBanksView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,10 +81,9 @@
 		A50A6CC92A68D0AE002A3930 /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
 		A50A6CCB2A69D466002A3930 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		A50A6CCD2A69F373002A3930 /* Bank.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bank.swift; sourceTree = "<group>"; };
-		A50A6CCF2A69F514002A3930 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		A50A6CD12A69F529002A3930 /* ReuseableProfileContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseableProfileContent.swift; sourceTree = "<group>"; };
 		A50A6CD62A6B137D002A3930 /* ParentMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentMain.swift; sourceTree = "<group>"; };
 		A50A6CD82A6C607A002A3930 /* ChildUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildUser.swift; sourceTree = "<group>"; };
+		A531676D2AE9F8CE00E02D87 /* TransparentBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentBlurView.swift; sourceTree = "<group>"; };
 		A53A2A742A6EEE54005BD8EE /* ChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginView.swift; sourceTree = "<group>"; };
 		A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentChildLoginView.swift; sourceTree = "<group>"; };
 		A59B29692A7D76E700D839E1 /* RecurringTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringTransaction.swift; sourceTree = "<group>"; };
@@ -123,10 +120,9 @@
 		A5E68D822A6F0F0F00AF2F9D /* CustomCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCorners.swift; sourceTree = "<group>"; };
 		A5E68D862A70809800AF2F9D /* FamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyView.swift; sourceTree = "<group>"; };
 		A5E68D882A7080A800AF2F9D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		A5E68D8A2A708A4F00AF2F9D /* ChildProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildProfileView.swift; sourceTree = "<group>"; };
-		A5E68D8C2A708A5B00AF2F9D /* ChildReusableProfileContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildReusableProfileContent.swift; sourceTree = "<group>"; };
 		A5E68D8E2A709F6000AF2F9D /* NewChildAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChildAccountView.swift; sourceTree = "<group>"; };
 		A5E68D902A70A82F00AF2F9D /* LoginCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCode.swift; sourceTree = "<group>"; };
+		A5F166962AEC952F00B1B5A7 /* AllBanksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllBanksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,9 +133,9 @@
 				A5B1C6FA2AB6487E0064E36D /* Algorithms in Frameworks */,
 				A59C77BF2A61E4BA008275D5 /* FirebaseDatabaseSwift in Frameworks */,
 				A59C77B22A61E1DB008275D5 /* FirebaseDatabase in Frameworks */,
+				A5B30E762AFB4D35006E5FFC /* SDWebImageSwiftUI in Frameworks */,
 				A59C77B42A61E1DB008275D5 /* FirebaseFirestore in Frameworks */,
 				A59C77C12A61E4BA008275D5 /* FirebaseFirestoreSwift in Frameworks */,
-				A50A6CD52A69F6B4002A3930 /* SDWebImageSwiftUI in Frameworks */,
 				A59C77AE2A61E1DB008275D5 /* FirebaseAnalytics in Frameworks */,
 				A59C77B62A61E1DB008275D5 /* FirebaseStorage in Frameworks */,
 				A59C77B02A61E1DB008275D5 /* FirebaseAuth in Frameworks */,
@@ -166,8 +162,6 @@
 		A53A2A6C2A6CAD4A005BD8EE /* Parent */ = {
 			isa = PBXGroup;
 			children = (
-				A50A6CCF2A69F514002A3930 /* ProfileView.swift */,
-				A50A6CD12A69F529002A3930 /* ReuseableProfileContent.swift */,
 				A50A6CD62A6B137D002A3930 /* ParentMain.swift */,
 				A53A2A762A6F064F005BD8EE /* ParentChildLoginView.swift */,
 				A5E68D8E2A709F6000AF2F9D /* NewChildAccountView.swift */,
@@ -190,11 +184,10 @@
 				A50A6CCB2A69D466002A3930 /* Home.swift */,
 				A5E68D862A70809800AF2F9D /* FamilyView.swift */,
 				A5E68D882A7080A800AF2F9D /* SettingsView.swift */,
-				A5E68D8A2A708A4F00AF2F9D /* ChildProfileView.swift */,
-				A5E68D8C2A708A5B00AF2F9D /* ChildReusableProfileContent.swift */,
 				A5A7DAA32A74980D00A66BFD /* BankTabButton.swift */,
 				A5A7DAA52A74993D00A66BFD /* BankView.swift */,
 				A5B121272A788FCF00A7C819 /* BankDetailsChild.swift */,
+				A5F166962AEC952F00B1B5A7 /* AllBanksView.swift */,
 			);
 			path = Child;
 			sourceTree = "<group>";
@@ -223,6 +216,7 @@
 				A59C77842A5F8251008275D5 /* ios-app2Tests */,
 				A59C778E2A5F8251008275D5 /* ios-app2UITests */,
 				A59C77722A5F824E008275D5 /* Products */,
+				A5B30E742AFB4D35006E5FFC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -301,6 +295,7 @@
 			children = (
 				A59C77A42A5F8288008275D5 /* Extensions.swift */,
 				A59C77A12A5F8279008275D5 /* KeyboardHandler.swift */,
+				A531676D2AE9F8CE00E02D87 /* TransparentBlurView.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -328,6 +323,13 @@
 			path = Main;
 			sourceTree = "<group>";
 		};
+		A5B30E742AFB4D35006E5FFC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -352,8 +354,8 @@
 				A59C77B52A61E1DB008275D5 /* FirebaseStorage */,
 				A59C77BE2A61E4BA008275D5 /* FirebaseDatabaseSwift */,
 				A59C77C02A61E4BA008275D5 /* FirebaseFirestoreSwift */,
-				A50A6CD42A69F6B4002A3930 /* SDWebImageSwiftUI */,
 				A5B1C6F92AB6487E0064E36D /* Algorithms */,
+				A5B30E752AFB4D35006E5FFC /* SDWebImageSwiftUI */,
 			);
 			productName = "ios-app2";
 			productReference = A59C77712A5F824E008275D5 /* ios-app2.app */;
@@ -432,6 +434,7 @@
 				A59C77BD2A61E4BA008275D5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A50A6CD32A69F6B4002A3930 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				A5B1C6F82AB6487E0064E36D /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				A5B30E712AFB4B15006E5FFC /* XCRemoteSwiftPackageReference "VisibilityTrackingScrollView" */,
 			);
 			productRefGroup = A59C77722A5F824E008275D5 /* Products */;
 			projectDirPath = "";
@@ -478,10 +481,10 @@
 			files = (
 				A5A7DAAC2A74B8CD00A66BFD /* ReoccuringTransactionsView.swift in Sources */,
 				A50A6CCA2A68D0AE002A3930 /* SideMenu.swift in Sources */,
-				A5E68D8B2A708A4F00AF2F9D /* ChildProfileView.swift in Sources */,
 				A5A7DAA62A74993D00A66BFD /* BankView.swift in Sources */,
 				A5E68D8F2A709F6000AF2F9D /* NewChildAccountView.swift in Sources */,
 				A59C77C32A61EC91008275D5 /* StartView.swift in Sources */,
+				A531676E2AE9F8CE00E02D87 /* TransparentBlurView.swift in Sources */,
 				A5A7DAAA2A74B7F300A66BFD /* SimpleUserView.swift in Sources */,
 				A53A2A772A6F064F005BD8EE /* ParentChildLoginView.swift in Sources */,
 				A59C77A22A5F8279008275D5 /* KeyboardHandler.swift in Sources */,
@@ -489,7 +492,6 @@
 				A50A6CD92A6C607A002A3930 /* ChildUser.swift in Sources */,
 				A59C77C52A61F214008275D5 /* MainView.swift in Sources */,
 				A5A7DAAE2A74B8E200A66BFD /* BankDetails.swift in Sources */,
-				A5E68D8D2A708A5B00AF2F9D /* ChildReusableProfileContent.swift in Sources */,
 				A5E68D832A6F0F0F00AF2F9D /* CustomCorners.swift in Sources */,
 				A5B121282A788FCF00A7C819 /* BankDetailsChild.swift in Sources */,
 				A59C77752A5F824E008275D5 /* ios_app2App.swift in Sources */,
@@ -505,14 +507,13 @@
 				A50A6CD72A6B137D002A3930 /* ParentMain.swift in Sources */,
 				A50A6CCC2A69D466002A3930 /* Home.swift in Sources */,
 				A5E68D912A70A82F00AF2F9D /* LoginCode.swift in Sources */,
-				A50A6CD22A69F529002A3930 /* ReuseableProfileContent.swift in Sources */,
 				A50A6CCE2A69F373002A3930 /* Bank.swift in Sources */,
 				A5A7DAA82A74B41600A66BFD /* AddBankView.swift in Sources */,
 				A5E68D872A70809800AF2F9D /* FamilyView.swift in Sources */,
-				A50A6CD02A69F514002A3930 /* ProfileView.swift in Sources */,
 				A59C77A52A5F8288008275D5 /* Extensions.swift in Sources */,
 				A5E68D812A6F0C0400AF2F9D /* TabButton.swift in Sources */,
 				A53A2A752A6EEE54005BD8EE /* ChildLoginView.swift in Sources */,
+				A5F166972AEC952F00B1B5A7 /* AllBanksView.swift in Sources */,
 				A5B1C6F72AB62E430064E36D /* ExpenseCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -674,10 +675,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app2/Preview Content\"";
-				DEVELOPMENT_TEAM = N96RG5575H;
+				DEVELOPMENT_TEAM = 2R9AWQ9AU5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Kid Kash";
@@ -691,8 +693,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LukaBaylis.ios-app2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -708,10 +711,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ios-app2/Preview Content\"";
-				DEVELOPMENT_TEAM = N96RG5575H;
+				DEVELOPMENT_TEAM = 2R9AWQ9AU5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Kid Kash";
@@ -725,8 +729,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LukaBaylis.ios-app2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.JaredBaylis.ios-app2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -883,14 +888,17 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		A5B30E712AFB4B15006E5FFC /* XCRemoteSwiftPackageReference "VisibilityTrackingScrollView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elegantchaos/VisibilityTrackingScrollView";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A50A6CD42A69F6B4002A3930 /* SDWebImageSwiftUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A50A6CD32A69F6B4002A3930 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
-			productName = SDWebImageSwiftUI;
-		};
 		A59C77AD2A61E1DB008275D5 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A59C77AC2A61E1DB008275D5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -930,6 +938,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A5B1C6F82AB6487E0064E36D /* XCRemoteSwiftPackageReference "swift-algorithms" */;
 			productName = Algorithms;
+		};
+		A5B30E752AFB4D35006E5FFC /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A50A6CD32A69F6B4002A3930 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

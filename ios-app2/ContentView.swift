@@ -24,13 +24,13 @@ struct ContentView: View {
     var body: some View {
         if logStatus {
             MainView()
-                .preferredColorScheme(.light)
+                //.preferredColorScheme(.light)
         } else if parentLogStatus {
             ParentMain()
-                .preferredColorScheme(.light)
+                //.preferredColorScheme(.light)
         } else {
             StartView()
-                .preferredColorScheme(.light)
+                //.preferredColorScheme(.light)
         }
         
     }

@@ -141,7 +141,7 @@ struct ParentMain: View {
                             
                         }
                         .padding()
-                        .background(.blue.gradient.opacity(0.75))
+                        .background(.ultraThinMaterial)
                         .clipShape(Circle())
                     }
                     .padding()
@@ -205,7 +205,7 @@ struct ParentMain: View {
                 .presentationBackground(.ultraThinMaterial)
                 .presentationCornerRadius(50)
         })
-        .preferredColorScheme(.light)
+        //.preferredColorScheme(.light)
         
         
         

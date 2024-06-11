@@ -15,6 +15,7 @@ import PhotosUI
 struct Home: View {
     
     @Binding var selectedTab: String
+    @Binding var selectedBanks: String
     
     @State var user: ChildUser?
     
@@ -24,62 +25,24 @@ struct Home: View {
     @AppStorage("user_name") var usernameStored: String = ""
     @AppStorage("user_UID") var userUID: String = ""
     
-    init(selectedTab: Binding<String>) {
+    init(selectedTab: Binding<String>, selectedBanks: Binding<String>) {
         self._selectedTab = selectedTab
+        self._selectedBanks = selectedBanks
         UITabBar.appearance().isHidden = true
     }
     
     var body: some View {
+        
         TabView(selection: $selectedTab) {
-            
-            
-            HomeViewThing()
-                .tag("Home")
             
             if LoadedUser {
                 
-                ForEach(0..<user!.banks.count) { i in
-                    BankView(BankName: user!.banks[i].name, bankArray: i, childUsername: user!.username)
-                        .tag(user!.banks[i].name)
-                }
+                AllBanksView(selectedBank: $selectedBanks)
+                    .tag("Bank Amounts")
                 
             }
-            
-            ChildProfileView()
-                .tag("Profile")
         }
-        .task {
-            await FetchUser()
-        }
-    }
-    
-    func FetchUser() async {
         
-        Task {
-            do {
-                    
-                let user = try await Firestore.firestore().collection("ChildUsers").document(usernameStored).getDocument(as: ChildUser.self)
-                
-                
-                await MainActor.run(body: {
-                    self.user = user
-                    LoadedUser = true
-                })
-                    
-            } catch {
-                
-            }
-        }
     }
     
-}
-
-struct HomeViewThing: View {
-    var body: some View {
-        Text("Home")
-    }
-}
-
-#Preview {
-    ContentView()
 }

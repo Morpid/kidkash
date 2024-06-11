@@ -48,6 +48,10 @@ struct ChildLoginView: View {
     
     @State private var parentUID: String = ""
     
+    @State var show_button: Bool = false
+    
+    @Environment(\.dismiss) var dismiss
+    
     @State var showForgotPasswordAlert: Bool = false
     @State var showForgotPasswordSentAlert: Bool = false
     @State var forgotPasswordAlert: String = "Forgot Password?"
@@ -56,8 +60,41 @@ struct ChildLoginView: View {
         if !showVerificationCodeView {
             VStack {
                 
-                Text("Log In")
-                    .font(.title)
+                HStack {
+                    
+                    VStack(alignment: .leading) {
+                        
+                        Text("Sign In")
+                            .foregroundStyle(.black)
+                            .font(.title)
+                            .bold()
+                            .padding([.horizontal, .top])
+                            .padding([.leading, .top], 15)
+                        
+                        Text("to your child account")
+                            .foregroundStyle(.black)
+                            .font(.callout)
+                            .padding([.horizontal])
+                            .padding([.leading], 15)
+                        
+                    }
+                 
+                    Spacer()
+                    
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .font(.title)
+                            .foregroundStyle(.black)
+                            
+                    }
+                    //.padding(.top)
+                    .padding(.trailing, 20)
+                }
+                
+                Spacer()
                 
                 HStack {
                     
@@ -65,42 +102,61 @@ struct ChildLoginView: View {
                         .foregroundStyle(.black)
                         .font(.title3)
                     
-                    
-                    
-                    TextField("Username", text: $username)
-                        .padding(.all, 5)
-                        .border(1, .black)
-                        .padding(.all, 5)
-                        .keyboardType(.emailAddress)
-                    
-                }
-                .padding(.horizontal, 30)
-                .padding(.bottom, 5)
-                
-                
-                Button {
-                    closeKeyboard()
-                    isLoading = true
-                    checkUsername()
-                } label: {
-                    if isLoading {
-                        ProgressView()
-                    } else {
-                        HStack {
-                            Text("Next")
-                                .foregroundStyle(.black)
-                            
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.black)
-                        }
+                    VStack {
+                        
+                        TextField("Username", text: $username)
+                            .keyboardType(.emailAddress)
+                            .onChange(of: username) { oldValue, newValue in
+                                if !newValue.isEmpty {
+                                    withAnimation {
+                                        if !show_button {
+                                            show_button = true
+                                        }
+                                    }
+                                } else {
+                                    if show_button {
+                                        withAnimation {
+                                            show_button = false
+                                        }
+                                    }
+                                }
+                            }
+                        
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(.black)
                     }
                 }
-                .border(1, .black)
+                .padding(.horizontal, 30)
+                .padding(.bottom, 15)
                 
                 
+                if show_button {
+                    
+                    Button {
+                        closeKeyboard()
+                        isLoading = true
+                        checkUsername()
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            HStack {
+                                Text("Next")
+                                    .foregroundStyle(.black)
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundStyle(.black)
+                            }
+                        }
+                    }
+                    
+                }
+                
+                Spacer()
                 
             }
-            .preferredColorScheme(.light)
+            //.preferredColorScheme(.light)
             .alert(forgotPasswordAlert, isPresented: $showForgotPasswordAlert) {
                 Button(role: .cancel, action: {}, label: { Text("Cancel") })
                 
@@ -118,13 +174,41 @@ struct ChildLoginView: View {
         } else {
             VStack {
                 
-                Text("Verify it's you")
-                    .font(.title)
-                    .fontWeight(.heavy)
+                HStack {
+                    
+                    VStack(alignment: .leading) {
+                        
+                        Text("Verify it's you")
+                            .foregroundStyle(.black)
+                            .font(.title)
+                            .bold()
+                            .padding([.horizontal, .top])
+                            .padding([.leading, .top], 15)
+                        
+                        Text("ask your parent to generate a login code for you")
+                            .foregroundStyle(.black)
+                            .font(.callout)
+                            .padding([.horizontal])
+                            .padding([.leading], 15)
+                        
+                    }
+                 
+                    Spacer()
+                    
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .symbolRenderingMode(.hierarchical)
+                            .font(.title)
+                            .foregroundStyle(.black)
+                            
+                    }
+                    //.padding(.top)
+                    .padding(.trailing, 20)
+                }
                 
-                Text("Go to the \(Image(systemName: "lock")) section on your parents device and generate a login code for your username")
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
+                Spacer()
                 
                 HStack {
                     
@@ -133,16 +217,19 @@ struct ChildLoginView: View {
                         .font(.title3)
                     
                     
-                    
-                    TextField("Verification Code", text: $codeTextField)
-                        .padding(.all, 5)
-                        .border(1, .black)
-                        .padding(.all, 5)
-                        .keyboardType(.emailAddress)
+                    VStack {
+                        
+                        TextField("Verification Code", text: $codeTextField)
+                            .keyboardType(.emailAddress)
+                        
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(.black)
+                    }
                     
                 }
                 .padding(.horizontal, 30)
-                .padding(.bottom, 5)
+                .padding(.bottom, 15)
                 .padding(.top, 30)
                 
                 if showProceedButton {
@@ -164,9 +251,10 @@ struct ChildLoginView: View {
                             }
                         }
                     }
-                    .border(1, .black)
                     .disabled(codeTextField.isEmpty)
                 }
+                
+                Spacer()
             }
             .onChange(of: codeTextField, { oldValue, newValue in
                 if !newValue.isEmpty {

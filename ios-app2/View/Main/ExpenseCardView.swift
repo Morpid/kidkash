@@ -17,21 +17,29 @@ struct ExpenseCardView: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(title)
+                    .foregroundStyle(.black)
+                    .font(.headline)
+                    .bold()
                 
                 Text(sub_title)
                     .font(.caption)
                     .foregroundStyle(.gray)
                 
-                Text(date, format: .dateTime.day().month().year().hour().minute())
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                
             }
-            .lineLimit(1)
             
             Spacer(minLength: 5)
             
-            Text("\(amount, specifier: "%.2f")")
-                .font(.title3.bold())
+            VStack(alignment: .trailing) {
+                
+                Text("\(amount, specifier: "%.2f")")
+                    .font(.title3.bold())
+                
+                Text(date, format: .dateTime.day().month().year().hour().minute())
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+                
+            }
             
             
         }

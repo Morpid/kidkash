@@ -14,6 +14,7 @@ struct BankTabButton: View {
     var title: String
     
     @Binding var selectedTab: String
+    @Binding var SelectedBank: String
     @Binding var showMenu: Bool
     @State var proxy: GeometryProxy
     
@@ -25,7 +26,9 @@ struct BankTabButton: View {
     var body: some View {
         Button {
             withAnimation(.spring()) {
-                selectedTab = BankTitle
+                selectedTab = "Bank Amounts"
+                SelectedBank = BankTitle
+                showMenu = false
             }
         } label: {
             HStack(spacing: 15) {
@@ -34,11 +37,11 @@ struct BankTabButton: View {
                 
                 Text(BankTitle)
                     .fontWeight(.bold)
-                    .foregroundStyle(selectedTab == BankTitle ? .black : .white)
+                    .foregroundStyle(SelectedBank == BankTitle ? .black : .white)
                 
                 Text(String(BankAmount))
                     .fontWeight(.regular)
-                    .foregroundStyle(selectedTab == BankTitle ? .black : .white)
+                    .foregroundStyle(SelectedBank == BankTitle ? .black : .white)
                             }
             .onChange(of: selectedTab, { oldValue, newValue in
                 if newValue == BankTitle {
@@ -49,16 +52,16 @@ struct BankTabButton: View {
                     }
                 }
             })
-            .foregroundStyle(selectedTab == BankTitle ? Color.black : .white)
+            .foregroundStyle(SelectedBank == BankTitle ? Color.black : .white)
             .padding(.vertical, 12)
             .padding(.horizontal, 10)
             //.frame(maxWidth: (proxy.size.width / 2), alignment: .leading)
             .frame(maxWidth: proxy.size.width, alignment: .leading)
             .background(
                 ZStack {
-                    if selectedTab == BankTitle {
+                    if SelectedBank == BankTitle {
                         Color.white
-                            .opacity(selectedTab == BankTitle ? 0.5 : 0)
+                            .opacity(SelectedBank == BankTitle ? 0.5 : 0)
                             //.clipShape(CustomCorners(corners: [.topRight, .bottomRight], radius: 12))
                             .matchedGeometryEffect(id: "TAB", in: animation)
                     }

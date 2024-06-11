@@ -16,6 +16,8 @@ struct TabButton: View {
     @Binding var showMenu: Bool
     @State var proxy: GeometryProxy
     
+    @Binding var selectedBank: String
+    
     @State var offset: CGFloat = 0.00
     @State var scale: CGFloat = 1
     
@@ -25,6 +27,8 @@ struct TabButton: View {
         Button {
             withAnimation(.spring()) {
                 selectedTab = title
+                selectedBank = ""
+                showMenu = false
             }
         } label: {
             HStack(spacing: 15) {
@@ -32,18 +36,18 @@ struct TabButton: View {
                     Image(systemName: "\(image).fill")
                         .font(.title2)
                         .frame(width: 30)
-                        .foregroundStyle(selectedTab == title ? .black : .white)
+                        .foregroundStyle(selectedBank == "" ? .black : .white)
                 } else {
                     Image(systemName: image)
                         .font(.title2)
                         .frame(width: 30)
-                        .foregroundStyle(selectedTab == title ? .black : .white)
+                        .foregroundStyle(selectedBank == "" ? .black : .white)
                 }
                 
                 
                 Text(title)
                     .fontWeight(.semibold)
-                    .foregroundStyle(selectedTab == title ? .black : .white)
+                    .foregroundStyle(selectedBank == "" ? .black : .white)
                             }
             .onChange(of: selectedTab, { oldValue, newValue in
                 if newValue == title {
@@ -54,7 +58,7 @@ struct TabButton: View {
                     }
                 }
             })
-            .foregroundStyle(selectedTab == title ? Color.black.opacity(0.3) : .white)
+            .foregroundStyle(selectedTab == title ? Color.black.opacity(0.3) : Color.black.opacity(0.3))
             .padding(.vertical, 12)
             .padding(.horizontal, 10)
             .frame(maxWidth: proxy.size.width, alignment: .leading)
@@ -62,10 +66,12 @@ struct TabButton: View {
             .background(
                 ZStack {
                     if selectedTab == title {
-                        Color.white
-                            .opacity(selectedTab == title ? 0.5 : 0)
+                        if selectedBank == "" {
+                            Color.white
+                                .opacity(selectedBank == "" ? 0.5 : 0)
                             //.clipShape(CustomCorners(corners: [.topRight, .bottomRight], radius: 12))
-                            .matchedGeometryEffect(id: "TAB", in: animation)
+                                .matchedGeometryEffect(id: "TAB", in: animation)
+                        }
                     }
                 }
             )

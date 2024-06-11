@@ -64,115 +64,114 @@ struct BankDetails: View {
     @State var show_number_err_alert: Bool = false
     
     var body: some View {
+        
         GeometryReader { proxy in
             
-           
-            
             if bank.transactionHistoryAmount.count > 0 {
-                List {
+                ScrollView {
                     
-                    Section {
-                            
-                        VStack {
-                            ZStack {
-                                
-                                HStack {
-                                    
-                                    Spacer()
-                                    
-                                    Text("$\(bank.amount, specifier: "%.2f")")
-                                        .font(.title)
-                                    
-                                    
-                                    Spacer()
-                                }
-                                .padding(.all, 20)
-                                
-                                
-                            }
-                            
-                            
-                            
-                            AmountHistoryChart()
+                        
+                    VStack {
+                        ZStack {
                             
                             HStack {
                                 
+                                Spacer()
+                                
                                 VStack {
                                     
-                                    Text("Amount History")
-                                        .font(.caption)
+                                    Text("\(bank.name)")
+                                        .font(.title)
                                         .bold()
-                                        .foregroundStyle(.black)
                                     
-                                    Text("Past 10 Changes")
-                                        .font(.caption2)
-                                        .foregroundStyle(.gray)
+                                    Text("$\(bank.amount, specifier: "%.2f")")
+                                        .font(.title2)
                                     
                                 }
                                 
                                 
-                                
                                 Spacer()
-                                
-                                Divider()
-                                    .padding(.vertical)
-                                
-                                Spacer()
-                                
-                                Text("Drag along chart to view amounts")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray)
-                                
-                                Image(systemName: "arrow.up")
-                                    .font(.caption2)
-                                    .foregroundStyle(.gray)
                             }
+                            .padding([.bottom, .horizontal], 20)
+                            
+                            
                         }
+                        
+                        AmountHistoryChart()
                         
                         
                     }
+                    .padding(.horizontal)
                     
-//                    Section() {
-//                        HStack {
-//                            Text("Transactions")
-//                                .font(.callout.bold())
-//                                .foregroundStyle(.black)
-//                            
-//                            Text("Pull down to refresh \(Image(systemName: "arrow.down"))")
-//                                .font(.caption2)
-//                                .foregroundStyle(.gray)
-//                        }
-//                    }
-                        
+                    
+                
                         
                     
+                    HStack() {
+                        Text("Transactions")
+                            .font(.title3.bold())
+                            .foregroundStyle(.black)
                         
-                    Section() {
+                        Spacer()
                         
-                        HStack() {
-                            Text("Transactions")
-                                .font(.title3.bold())
-                                .foregroundStyle(.black)
-                            
-                            Spacer()
-                            
-                            Text("Pull down to refresh \(Image(systemName: "arrow.down"))")
+                        
+                        Button {
+                            Task {
+                                
+                                isLoading = true
+                                
+                                await updateFirebaseBank()
+                                
+                                await loadArrays()
+                                
+                                if bank.transactionHistoryAmount.count > 1 {
+                                    
+                                    var newarraytemp: [Double] = []
+                                    
+                                    if negArray.count >= 2 {
+                                        for i in 0...(negArray.count - 1) {
+                                            newarraytemp.append(-negArray[i])
+                                        }
+                                    }
+                                    
+                                    
+                                    await MainActor.run {
+                                        usable_negative_array = newarraytemp
+                                    }
+                                }
+                                
+                                sleep(2)
+                                
+                                isLoading = false
+                                
+                            }
+                        } label: {
+                            Text("REFRESH \(Image(systemName: "arrow.2.circlepath"))")
                                 .font(.caption)
                                 .foregroundStyle(.gray)
-                        }
-                        .padding(.vertical, 10)
                             
+                        }
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal)
+                    
+                    VStack {
+                        
                         ForEach(transaction_info) { transaction in
-                            ExpenseCardView(title: transaction.name, sub_title: transaction.subtitle, date: transaction.date, amount: transaction.amount)
-                        }
                             
+                            Divider()
+                            
+                            ExpenseCardView(title: transaction.name, sub_title: transaction.subtitle, date: transaction.date, amount: transaction.amount)
+                                .padding(5)
+                        }
+                        .padding(.horizontal)
+                        
                     }
                     
                         
                     
                 }
                 .frame(maxWidth: .infinity)
-                .navigationTitle(bank.name)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
@@ -236,7 +235,7 @@ struct BankDetails: View {
         .overlay {
             LoadingView(show: $isLoading)
         }
-        .preferredColorScheme(.light)
+        //.preferredColorScheme(.light)
         .refreshable {
             
             Task {
@@ -413,21 +412,39 @@ struct BankDetails: View {
                                         .onChanged { value in
                                             let location = value.location
                                             
-                                            if let index_value: Int = proxy.value(atX: location.x) {
-                                                if index_value <= 10 && index_value >= 0 {
-                                                    
-                                                    if index_value == 0 {
-                                                        AnnotationPos = .topTrailing
-                                                    } else if index_value == 10 {
-                                                        AnnotationPos = .topLeading
-                                                    } else {
-                                                        AnnotationPos = .top
+                                            var x = value.translation.width
+                                            var y = value.translation.height
+                                            
+                                            var horizontal: Bool = true
+                                            var vertical: Bool = true
+                                                            
+                                            if ((x < 0 && y < 0 && x < y) || (x < 0 && y > 0 && -x > y) || (x > 0 && y < 0 && x > -y) || (x > 0 && y > 0 && x > y)) && horizontal && vertical {
+                                                horizontal = true
+                                                vertical = false
+                                            } else if vertical && horizontal {
+                                                horizontal = false
+                                                vertical = true
+                                            }
+                                            
+                                            if horizontal {
+                                                
+                                                if let index_value: Int = proxy.value(atX: location.x) {
+                                                    if index_value <= 10 && index_value >= 0 {
+                                                        
+                                                        if index_value == 0 {
+                                                            AnnotationPos = .topTrailing
+                                                        } else if index_value == 10 {
+                                                            AnnotationPos = .topLeading
+                                                        } else {
+                                                            AnnotationPos = .top
+                                                        }
+                                                        
+                                                        self.currentActiveItem = (amount: bank.amountHistoryAmount[((bank.amountHistoryAmount.count - 11) + index_value)], date: bank.amountHistoryDate[((bank.amountHistoryDate.count - 11) + index_value)], index: index_value)
+                                                        
+                                                        self.plotWidth = proxy.plotSize.width
                                                     }
-                                                    
-                                                    self.currentActiveItem = (amount: bank.amountHistoryAmount[((bank.amountHistoryAmount.count - 11) + index_value)], date: bank.amountHistoryDate[((bank.amountHistoryDate.count - 11) + index_value)], index: index_value)
-                                                    
-                                                    self.plotWidth = proxy.plotSize.width
                                                 }
+                                                
                                             }
                                         }.onEnded({ value in
                                             self.currentActiveItem = nil
@@ -526,20 +543,38 @@ struct BankDetails: View {
                                         .onChanged { value in
                                             let location = value.location
                                             
-                                            if let index_value: Int = proxy.value(atX: location.x) {
-                                                if index_value <= (bank.amountHistoryAmount.count - 1) && index_value >= 0 {
-                                                    
-                                                    if index_value == 0 {
-                                                        AnnotationPos = .topTrailing
-                                                    } else if index_value == (bank.amountHistoryAmount.count - 1) {
-                                                        AnnotationPos = .topLeading
-                                                    } else {
-                                                        AnnotationPos = .top
+                                            var x = value.translation.width
+                                            var y = value.translation.height
+                                            
+                                            var horizontal: Bool = true
+                                            var vertical: Bool = true
+                                                            
+                                            if ((x < 0 && y < 0 && x < y) || (x < 0 && y > 0 && -x > y) || (x > 0 && y < 0 && x > -y) || (x > 0 && y > 0 && x > y)) && horizontal && vertical {
+                                                horizontal = true
+                                                vertical = false
+                                            } else if vertical && horizontal {
+                                                horizontal = false
+                                                vertical = true
+                                            }
+                                            
+                                            if horizontal {
+                                                
+                                                if let index_value: Int = proxy.value(atX: location.x) {
+                                                    if index_value <= (bank.amountHistoryAmount.count - 1) && index_value >= 0 {
+                                                        
+                                                        if index_value == 0 {
+                                                            AnnotationPos = .topTrailing
+                                                        } else if index_value == (bank.amountHistoryAmount.count - 1) {
+                                                            AnnotationPos = .topLeading
+                                                        } else {
+                                                            AnnotationPos = .top
+                                                        }
+                                                        
+                                                        self.currentActiveItem = (amount: bank.amountHistoryAmount[index_value], date: bank.amountHistoryDate[index_value], index: index_value)
+                                                        self.plotWidth = proxy.plotSize.width
                                                     }
-                                                    
-                                                    self.currentActiveItem = (amount: bank.amountHistoryAmount[index_value], date: bank.amountHistoryDate[index_value], index: index_value)
-                                                    self.plotWidth = proxy.plotSize.width
                                                 }
+                                                
                                             }
                                         }.onEnded({ value in
                                             self.currentActiveItem = nil

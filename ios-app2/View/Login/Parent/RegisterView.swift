@@ -27,10 +27,11 @@ struct RegisterView: View {
     @State var showError: Bool = false
     @State var errorMsg: String = ""
     
-    
     @State var isLoading: Bool = false
     
     @State var fetchedUsers: [User] = []
+    
+    @State var show_button: Bool = false
     
     
     @AppStorage("parent_log_status") var parentLogStatus: Bool = false
@@ -42,114 +43,115 @@ struct RegisterView: View {
     
     var body: some View {
         VStack {
-//            Text("Sign Up")
-//                .font(.title)
-            
-            ZStack {
-                
-                ZStack {
-                    if let userProfileImageData, let image = UIImage(data: userProfileImageData) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    }
+            HStack {
                     
+                Image(systemName: "at")
+                    .foregroundStyle(.black)
+                    .font(.title3)
                     
+                VStack {
+                    
+                    TextField("Email", text: $emailID)
+                        .padding(.top, 10)
+                        .padding(.leading, 10)
+                        .keyboardType(.emailAddress)
+                        .onChange(of: emailID) { oldValue, newValue in
+                            if !newValue.isEmpty {
+                                if !password.isEmpty {
+                                    withAnimation {
+                                        show_button = true
+                                    }
+                                } else {
+                                    withAnimation {
+                                        show_button = false
+                                    }
+                                }
+                            } else {
+                                withAnimation {
+                                    show_button = false
+                                }
+                            }
+                        }
+                        .onChange(of: password) { oldValue, newValue in
+                            if !newValue.isEmpty {
+                                if !emailID.isEmpty {
+                                    withAnimation {
+                                        show_button = true
+                                    }
+                                } else {
+                                    withAnimation {
+                                        show_button = false
+                                    }
+                                }
+                            } else {
+                                withAnimation {
+                                    show_button = false
+                                }
+                            }
+                        }
+                 
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundStyle(.black)
                 }
-                .frame(width: 70, height: 70)
-                .clipShape(Circle())
-                .contentShape(Circle())
-                .padding(.trailing)
                 
+            }
+            .padding(.horizontal, 30)
+            .padding(.bottom, 15)
+            
+            
+            
+            HStack {
+                    
+                Image(systemName: "lock")
+                    .foregroundStyle(.black)
+                    .font(.title3)
+                
+                
+                VStack {
+                    
+                    SecureField("Password", text: $password)
+                        .padding(.top, 10)
+                        .padding(.leading, 10)
+                 
+                    
+                    Rectangle()
+                        .frame(height: 1)
+                        .foregroundStyle(.black)
+                }
+                
+                
+                
+            }
+            .padding(.horizontal, 30)
+            .padding(.bottom, 15)
+                
+            if show_button {
                 
                 Button {
-                    showImagePicker.toggle()
+                    closeKeyboard()
+                    registerUser()
                 } label: {
-                    
-                    Image(systemName: "plus.circle.fill")
-                        .foregroundStyle(.blue)
-                        .font(.title)
-                    
-                }
-                .offset(x: 25, y: 25)
-            }
-            .padding()
-            
-            
-            
-            
-            HStack {
-                    
-                Image(systemName: "envelope.open.fill")
-                    .foregroundStyle(.black)
-                    .font(.title3)
-                    
-                
-                
-                TextField("Email", text: $emailID)
-                    .padding(.all, 5)
-                    .border(1, .black)
-                    .padding(.all, 5)
-                    .keyboardType(.emailAddress)
-                
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 5)
-            
-            HStack {
-                    
-                Image(systemName: "key.fill")
-                    .foregroundStyle(.black)
-                    .font(.title3)
-                    .padding(.leading, 5)
-                
-                
-                SecureField("Password", text: $password)
-                    .padding(.all, 5)
-                    .border(1, .black)
-                    .padding(.all, 5)
-                    .padding(.leading, 6)
-                
-                
-                
-            }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 5)
-                
-         
-                
-            Button {
-                closeKeyboard()
-//                Task {
-//                    await searchUsers()
-//                }
-                registerUser()
-            } label: {
-                if isLoading {
-                    ProgressView()
-                        .border(1, .black)
-                } else {
-                    
-                    HStack {
-                        Text("Next")
-                            .foregroundStyle(.black)
+                    if isLoading {
+                        ProgressView()
+                    } else {
                         
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.black)
+                        HStack {
+                            Text("Next")
+                                .foregroundStyle(.black)
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.black)
+                        }
+                        
                     }
-                    .border(1, .black)
                 }
-            }
-            
                 
+            }
             
             
         }
-        .preferredColorScheme(.light)
+        //.preferredColorScheme(.light)
         .onChange(of: keyboardHandler.keyboardHeight, { oldValue, newValue in
             withAnimation(.spring(duration: 0.2)) {
                 keyboardHeight = newValue
@@ -201,19 +203,13 @@ struct RegisterView: View {
                 try await Auth.auth().createUser(withEmail: emailID, password: password)
                 
                 guard let userUID = Auth.auth().currentUser?.uid else { return }
-                guard let imageData = userProfileImageData else { return }
-                let storageRef = Storage.storage().reference().child("Profile_Images").child(userUID)
-                let _ = try await storageRef.putDataAsync(imageData)
                 
-                let downloadURL = try await storageRef.downloadURL()
-                
-                let user = User(userEmail: emailID, userUID: userUID, userProfileURL: downloadURL)
+                let user = User(userEmail: emailID, userUID: userUID)
                 
                 let _ = try Firestore.firestore().collection("Users").document(userUID).setData(from: user, completion: {
                     error in
                     if error == nil {
                         self.userUID = userUID
-                        profileURL = downloadURL
                         parentLogStatus = true
                         
                     }
@@ -257,4 +253,4 @@ struct RegisterView: View {
 
 #Preview {
     RegisterView()
-}
+} 

@@ -159,7 +159,13 @@ struct AddExpenseView: View {
                             .listRowSeparator(.hidden)
                     }
                     
+                    Spacer()
+                        .frame(height: 25)
+                    
                     Divider()
+                    
+                    Spacer()
+                        .frame(height: 25)
                     
                     if selectedExpenseType == "Expense" {
                         
@@ -207,6 +213,14 @@ struct AddExpenseView: View {
                         .listRowBackground(Color.clear)
                         .border(1, .black)
                         .listRowSeparator(.hidden)
+                        
+                        Spacer()
+                            .frame(height: 25)
+                        
+                        Divider()
+                        
+                        Spacer()
+                            .frame(height: 25)
                         
                         if !loading_bank_names {
                             
@@ -266,6 +280,11 @@ struct AddExpenseView: View {
                                 Task {
                                     await sendTransferFirebase(from: selected_bank_from, to: selected_bank_to)
                                 }
+                            } else if selectedExpenseType == "Interest" {
+                                Task {
+                                    await addInterest(amount: percent_amount)
+                                }
+                            
                             } else {
                                 addExpense()
                             }
@@ -294,7 +313,45 @@ struct AddExpenseView: View {
     }
     
     var isAddButtonDisabled: Bool {
-        return title.isEmpty || subTitle.isEmpty || amount == .zero
+        if selectedExpenseType == "Interest" {
+            return title.isEmpty || subTitle.isEmpty
+        } else {
+            return title.isEmpty || subTitle.isEmpty || amount == .zero
+        }
+    }
+    
+    func addInterest(amount: Int) async {
+        Task {
+            var user = try await Firestore.firestore().collection("ChildUsers").document(username).getDocument(as: ChildUser.self)
+            
+            user.banks[bankArray].transactionHistoryName.append(title)
+            
+            user.banks[bankArray].transactionHistorySubTitle.append(subTitle)
+            
+            var amount_to_add = 0.00
+            
+            if amount < 10 {
+                amount_to_add = (user.banks[bankArray].amount * Double("0.0\(amount)")!)
+            } else if amount == 100 {
+                amount_to_add = user.banks[bankArray].amount
+            } else {
+                amount_to_add = (user.banks[bankArray].amount * Double("0.\(amount)")!)
+            }
+            
+            user.banks[bankArray].amountHistoryAmount.append((user.banks[bankArray].amount + amount_to_add))
+            user.banks[bankArray].amountHistoryDate.append(Date.now)
+            user.banks[bankArray].transactionHistoryAmount.append(Double(String(amount_to_add))!)
+            user.banks[bankArray].transactionHistoryDate.append(Date.now)
+            user.banks[bankArray].amount = (user.banks[bankArray].amount + amount_to_add)
+            
+            let _ = try Firestore.firestore().collection("ChildUsers").document(username).setData(from: user)
+            
+            await MainActor.run { [user] in
+                self.bank = user.banks[bankArray]
+            }
+        }
+        
+        dismiss()
     }
     
     func addExpense() {

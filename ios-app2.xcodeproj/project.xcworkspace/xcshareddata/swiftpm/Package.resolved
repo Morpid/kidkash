@@ -134,6 +134,15 @@
         "revision" : "f25867a208f459d3c5a06935dceb9083b11cd539",
         "version" : "1.22.0"
       }
+    },
+    {
+      "identity" : "visibilitytrackingscrollview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/elegantchaos/VisibilityTrackingScrollView",
+      "state" : {
+        "branch" : "main",
+        "revision" : "65948d428fdb6c82bb56754f7030eb28b21a795c"
+      }
     }
   ],
   "version" : 2

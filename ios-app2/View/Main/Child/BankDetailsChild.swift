@@ -13,362 +13,331 @@ import FirebaseFirestore
 import FirebaseFirestoreSwift
 import SDWebImageSwiftUI
 import PhotosUI
+//import VisibilityTrackingScrollView
 
 
 struct BankDetailsChild: View {
     
-    @Namespace var trailingID
+    @State var plotWidth: CGFloat = 0
     
-    @Namespace var animation
+    @State var AnnotationPos: AnnotationPosition = .top
     
-    @State var AllBanksNames: [String] = []
+    @State var expense_amount: String = ""
     
-    @State var DoubleDigit: String = ""
+    @Binding var selectedBank: String
     
-    @State var bank: Bank
+    @State var bank: Bank?
     
-    @State var showNeg: Bool = false
+    @State var usable_negative_array: [Double] = []
     
-    @State var elapsed: Int = 0
+    @State var transaction_info: [BankTransactionInfo] = []
     
-    @State var positive_NEG_ARRAY: [Double] = []
+    @State var bankArray: Int = 0
     
-    @State var refreshChart: Bool = false
-    
-    @State var bankHistoryAmount: [Double] = []
-    
-    @State var TransactionInfo: [BankTransactionInfo] = []
-    
-    @State var bankArray: Int
-    @State var usernameChild: String
+    @AppStorage("user_name") var usernameChild: String = ""
     
     @State var negArray: [Double] = []
     @State var posArray: [Double] = []
     
-    @State var negArrayDates: [Date] = []
-    @State var posArrayDates: [Date] = []
+    @State var currentActiveItem: (amount: Double, date: Date, index: Int)?
     
-    @State var isLoading: Bool = false
+    @State var isLoading: Bool = true
     
-    @State var loading: Bool = false
+    @State var profileImg: URL?
     
-    @State var isDoneLoadingArrays: Bool = false
+    @State var showLoading: Bool = false
     
-    @State var newAmount: Double = 0.00
+    @State var show_title: Bool = true
     
-    @State var AddTextFieldFirstDigit: String = ""
-    @State var AddTextFieldSecondDigit: String = ""
+    @Namespace var titleID
     
-    @State var SubtractTextFieldFirstDigit: String = ""
-    @State var SubtractTextFieldSecondDigit: String = ""
-    
-    @State var showSheet0: Bool = false
-    @State var showSheet1: Bool = false
-    @State var showSheet2: Bool = false
-    
-    @State var showButton: Bool = false
-    @State var EditReason: String = ""
-    
-    @State var bankSelection1 = "Savings"
-    @State var bankSelection2 = "Savings"
+    @State private var scrollPosition: CGPoint = .zero
     
     var body: some View {
-        if !loading {
-            GeometryReader { proxy in
+        
+        GeometryReader {
+            if !isLoading {
+                let safeArea = $0.safeAreaInsets
                 
-                VStack {
+                if bank!.transactionHistoryAmount.count > 0 {
                     
-                    Spacer()
-                        .frame(height: 100)
-                    
-                    HStack {
+                    ScrollViewReader { proxy in
                         
-                        Text("\(bank.name)")
-                            .font(.title)
-                            .bold()
-                        
-                        Text("$\(bank.amount, specifier: "%.2f")")
-                            .font(.title)
-                    }
-                    
-                    
-                    
-                    
-                    
-                    ZStack {
-                        
-                        Rectangle()
-                            .cornerRadius(radius: 50, corners: [.topLeft, .topRight])
-                            .foregroundStyle(.ultraThinMaterial)
-                            .ignoresSafeArea(edges: [.bottom])
-                        
-                        VStack {
+                        ScrollView {
                             
-                            
-                            ScrollView {
+                            VStack {
                                 
-                                
-                                
-                                if bank.amountHistoryAmount.count >= 2 {
-                                    VStack(alignment: .leading) {
-                                        
-                                        Text("Amount History")
-                                            .font(.title)
-                                            .fontWeight(.heavy)
-                                            .frame(alignment: .leading)
-                                        
-                                        Text("Past 10 Changes")
-                                            .font(.callout)
-                                            .opacity(0.75)
-                                            .frame(alignment: .leading)
-                                        
-                                        if bank.amountHistoryAmount.count > 10 {
-                                            Chart {
-                                                ForEach(Array(bank.amountHistoryAmount[(bank.amountHistoryAmount.count - 11)...(bank.amountHistoryAmount.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                    LineMark(
-                                                        x: .value("Index", index),
-                                                        y: .value("Value", value)
-                                                    )
-                                                    .foregroundStyle(.mint.gradient)
-                                                    
-                                                    
-                                                }
-                                            }
-                                            .frame(height: proxy.size.height / 3)
-                                            
-                                        } else {
-                                            Chart {
-                                                ForEach(Array(bank.amountHistoryAmount.enumerated()), id: \.offset) { index, value in
-                                                    LineMark(
-                                                        x: .value("Index", index),
-                                                        y: .value("Value", value)
-                                                    )
-                                                    .foregroundStyle(.mint.gradient)
-                                                    
-                                                }
-                                            }
-                                            .frame(height: proxy.size.height / 3)
-                                        }
-                                        
-                                        
+                                TransparentBlurView(removeAllFilters: true)
+                                    .frame(height: 75 + safeArea.top)
+                                    .padding([.horizontal, .top], -30)
+                                    .visualEffect { view, proxy in
+                                        view
+                                            .offset(y: (proxy.bounds(of: .scrollView)?.minY ?? 0))
                                     }
-                                    .padding()
-                                    .task {
-                                        if bank.transactionHistoryAmount != [] {
-                                            Task {
-                                                await loadArrays()
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                }
+                                    .zIndex(1000)
+                                    .blur(radius: 10)
                                 
-                                if bank.transactionHistoryAmount.count >= 2 {
-                                    
-                                    if posArray.count >= 2 {
-                                        VStack(alignment: .leading) {
+                                VStack {
+                                    if show_title {
+                                        GeometryReader { proxy in
                                             
-                                            Text("Add History")
-                                                .font(.title)
-                                                .fontWeight(.heavy)
-                                                .frame(alignment: .leading)
-                                            
-                                            Text("Past 10 Changes")
-                                                .font(.callout)
-                                                .opacity(0.75)
-                                                .frame(alignment: .leading)
-                                            
-                                            if posArray.count > 10 {
+                                            ZStack {
                                                 
-                                                
-                                                Chart {
-                                                    ForEach(Array(posArray[(posArray.count - 11)...(posArray.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.green.gradient)
+                                                HStack {
+                                                    
+                                                    Spacer()
+                                                    
+                                                    VStack {
+                                                        
+                                                        Text("\(bank!.name)")
+                                                            .font(.title2)
+                                                        
+                                                        Text("$\(bank!.amount, specifier: "%.2f")")
+                                                            .font(.title)
+                                                            .bold()
                                                         
                                                     }
                                                     
+                                                    
+                                                    Spacer()
                                                 }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
+                                                .padding([.bottom, .horizontal], 20)
                                                 
-                                            } else {
-                                                Chart {
-                                                    ForEach(Array(posArray.enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.green.gradient)
-                                                        
+                                                
+                                            }
+                                            .id(titleID)
+                                            .onChange(of: scrollPosition) { old, new in
+                                                if (-scrollPosition.y > proxy.size.height * 2.9) {
+                                                    withAnimation {
+                                                        show_title = false
                                                     }
                                                 }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
                                             }
                                             
-                                            
                                         }
-                                        .padding()
-                                        
-                                        
-                                    }
-                                    
-                                    
-                                    if negArray.count >= 2 {
-                                        VStack(alignment: .leading) {
-                                            
-                                            Text("Subtract History")
-                                                .font(.title)
-                                                .fontWeight(.heavy)
-                                                .frame(alignment: .leading)
-                                            
-                                            Text("Past 10 Changes")
-                                                .font(.callout)
-                                                .opacity(0.75)
-                                                .frame(alignment: .leading)
-                                            
-                                            if negArray.count > 10 {
+                                    } else {
+                                        VStack {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 20)
+                                                    .foregroundStyle(.white)
+                                                    .shadow(radius: 3.5)
+                                                    .frame(height: 75)
                                                 
-                                                
-                                                Chart {
-                                                    ForEach(Array(negArray[(negArray.count - 11)...(negArray.count - 1)].enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.red.gradient)
+                                                HStack {
+                                                    
+                                                    VStack {
+                                                        Text("--")
+                                                            .font(.title3)
+                                                            .bold()
                                                         
-                                                        //                                            AreaMark(
-                                                        //                                                x: .value("Index", index),
-                                                        //                                                y: .value("Value", value)
-                                                        //                                            )
-                                                        //                                            .foregroundStyle(.red.opacity(0.2).gradient)
+                                                        Text("$--.--")
+                                                            .font(.title3)
                                                     }
+                                                    
+                                                    Spacer()
+                                                    
+                                                    Image(systemName: "chevron.down")
+                                                        .foregroundStyle(.black)
                                                 }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
+                                                .padding(.horizontal)
                                                 
-                                            } else {
-                                                Chart {
-                                                    ForEach(Array(negArray.enumerated()), id: \.offset) { index, value in
-                                                        BarMark(
-                                                            x: .value("Index", index),
-                                                            y: .value("Value", value)
-                                                        )
-                                                        .foregroundStyle(.red.gradient)
-                                                        
-                                                        //                                            AreaMark(
-                                                        //                                                x: .value("Index", index),
-                                                        //                                                y: .value("Value", value)
-                                                        //                                            )
-                                                        //                                            .foregroundStyle(.red.opacity(0.2).gradient)
-                                                    }
-                                                }
-                                                .frame(height: proxy.size.height / 4)
-                                                .chartXAxis(.hidden)
+                                                
                                                 
                                             }
                                             
+                                            Spacer()
+                                            
+                                            
                                             
                                         }
-                                        .padding()
-                                        
+                                        .padding(.horizontal)
                                     }
                                     
+                                    AmountHistoryChart()
                                     
                                     
                                 }
+                                .padding(.horizontal)
                                 
-                                if bank.transactionHistoryAmount.count > 0 {
-                                    VStack(alignment: .leading) {
-                                        Text("Transaction History")
-                                            .font(.title)
-                                            .fontWeight(.heavy)
-                                            .frame(alignment: .leading)
+                                
+                                HStack() {
+                                    Text("Transactions")
+                                        .font(.title3.bold())
+                                        .foregroundStyle(.black)
+                                    
+                                    Spacer()
+                                    
+                                    Button {
+                                        Task {
+                                            
+                                            showLoading = true
+                                            
+                                            await updateFirebaseBank()
+                                            
+                                            await loadArrays()
+                                            
+                                            if bank!.transactionHistoryAmount.count > 1 {
+                                                
+                                                var newarraytemp: [Double] = []
+                                                
+                                                if negArray.count >= 2 {
+                                                    for i in 0...(negArray.count - 1) {
+                                                        newarraytemp.append(-negArray[i])
+                                                    }
+                                                }
+                                                
+                                                
+                                                await MainActor.run {
+                                                    usable_negative_array = newarraytemp
+                                                }
+                                            }
+                                            
+                                            sleep(2)
+                                            
+                                            showLoading = false
+                                            
+                                        }
+                                    } label: {
+                                        Text("REFRESH \(Image(systemName: "arrow.2.circlepath"))")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+                                    }
+                                }
+                                .padding(.vertical, 10)
+                                .padding(.horizontal)
+                                
+                                VStack {
+                                    
+                                    ForEach(transaction_info) { transaction in
                                         
                                         Divider()
                                         
-                                        ForEach(0..<bank.transactionHistoryAmount.count) { i in
-                                            
-                                            HStack {
-                                                Text("\(bank.transactionHistoryName[(bank.transactionHistoryAmount.count - (i + 1))])")
-                                                    .bold()
-                                                
-                                                Spacer()
-                                                
-                                                Text(bank.transactionHistoryDate[(bank.transactionHistoryAmount.count - (i + 1))], format: .dateTime.day().month().year())
-                                                
-                                                Text("\(bank.transactionHistoryAmount[(bank.transactionHistoryAmount.count - (i + 1))], specifier: "%.2f")")
-                                                    .bold()
-                                                
-                                            }
-                                            .padding()
-                                            
-                                            Divider()
-                                        }
+                                        ExpenseCardView(title: transaction.name, sub_title: transaction.subtitle, date: transaction.date, amount: transaction.amount)
+                                            .padding(5)
                                     }
+                                    .padding(.horizontal)
                                 }
                                 
-                                
-                                
                             }
-                            .padding()
+                            .background(GeometryReader { geometry in
+                                Color.clear
+                                    .preference(key: ScrollOffsetPreferenceKey.self, value: geometry.frame(in: .named("scroll")).origin)
+                            })
+                            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
+                                self.scrollPosition = value
+                            }
                             
+                        }
+                        .coordinateSpace(name: "scroll")
+                        .navigationTitle("Scroll offset: \(scrollPosition.y)")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .overlay(content: {
+                            LoadingView(show: $showLoading)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .navigationTitle(bank!.name)
+                        .onAppear {
+                            Task {
+                                await updateFirebaseBank()
+                                
+                                await loadArrays()
+                            }
+                        }
+                        .ignoresSafeArea(.container, edges: .top)
+                        
+                    }
+                } else {
+                    ContentUnavailableView {
+                        Label("Nothing Here Yet...", systemImage: "tray")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .navigationTitle(bank!.name)
+                    .onAppear {
+                        Task {
+                            await updateFirebaseBank()
+                            
+                            await loadArrays()
                         }
                         
                         
-                    }
-                    
-                }
-                .frame(maxWidth: .infinity)
-                .navigationTitle(bank.name)
-                .background(LinearGradient(colors: [.mint.opacity(0.25), .gray], startPoint: .topTrailing, endPoint: .bottomLeading))
-                .onAppear {
-                    Task {
-                        await updateFirebaseBank()
                         
-                        await loadArrays()
                     }
-                    
+                }
+            }
+        }
+        .overlay {
+            LoadingView(show: $isLoading)
+        }
+        .onAppear {
+            Task {
+                var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
+                
+                for i in 0...(user.banks.count - 1) {
+                    if user.banks[i].name == selectedBank {
+                        bank = user.banks[i]
+                    }
                 }
                 
+                isLoading = false
             }
-            .overlay {
-                LoadingView(show: $isLoading)
-            }
-            .preferredColorScheme(.light)
-            .refreshable {
+        }
+        .onChange(of: selectedBank, { oldValue, newValue in
+            Task {
                 
-                Task {
+                await updateFirebaseBank()
+                
+                if bank!.transactionHistoryAmount.count > 1 {
                     
-                    await updateFirebaseBank()
+                    var newarraytemp: [Double] = []
                     
-                    await loadArrays()
-                    
-                    if bank.transactionHistoryAmount.count > 1 {
-                        
-                        var newarraytemp: [Double] = []
-                        
+                    if negArray.count >= 2 {
                         for i in 0...(negArray.count - 1) {
                             newarraytemp.append(-negArray[i])
                         }
-                        
-                        await MainActor.run {
-                            positive_NEG_ARRAY = newarraytemp
+                    }
+                    
+                    
+                    await MainActor.run {
+                        usable_negative_array = newarraytemp
+                    }
+                }
+                
+                
+                
+            }
+        })
+        //.preferredColorScheme(.light)
+        .refreshable {
+            
+            Task {
+                
+                await updateFirebaseBank()
+                
+                await loadArrays()
+                
+                if bank!.transactionHistoryAmount.count > 1 {
+                    
+                    var newarraytemp: [Double] = []
+                    
+                    if negArray.count >= 2 {
+                        for i in 0...(negArray.count - 1) {
+                            newarraytemp.append(-negArray[i])
                         }
                     }
                     
                     
-                    
+                    await MainActor.run {
+                        usable_negative_array = newarraytemp
+                    }
                 }
                 
+                
+                
             }
+            
         }
+        
     }
     
     func loadArrays() async {
@@ -379,6 +348,12 @@ struct BankDetailsChild: View {
             
             var tempNegArray: [Double] = []
             var tempPosArray: [Double] = []
+            
+            for i in 0...(user.banks.count - 1) {
+                if user.banks[i].name == bank!.name {
+                    bankArray = i
+                }
+            }
             
             if user.banks[bankArray].transactionHistoryAmount.count > 0 {
                 for i in 0...(user.banks[bankArray].transactionHistoryAmount.count - 1) {
@@ -401,15 +376,315 @@ struct BankDetailsChild: View {
                     }
                 }
                 
+                
+                
             }
+            
+            
             
         }
     
-        
-        isDoneLoadingArrays = true
     }
     
+    func FindLast10Max() -> Double {
+        var newtemparr: [Double] = []
+        for i in 0...10 {                
+            newtemparr.append(bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1) - i])
+        }
+        let max = newtemparr.max()
+        return max!
+    }
     
+    func FindMax() -> Double {
+        let max = bank!.amountHistoryAmount.max()
+        return max!
+    }
+    
+    @ViewBuilder
+    func AmountHistoryChart() -> some View {
+        
+        
+        
+        if bank!.amountHistoryAmount.count >= 2 {
+            VStack(alignment: .leading, spacing:0) {
+                
+                if bank!.amountHistoryAmount.count > 10 {
+                    Chart {
+                        ForEach(Array(bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 11)...(bank!.amountHistoryAmount.count - 1)].enumerated()), id: \.offset) { index, value in
+                            LineMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient)
+                            
+                            AreaMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient.opacity(0.2))
+                            
+                            if bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)] > bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 2)] {
+                                
+                                PointMark(
+                                    x: .value("Index", 10),
+                                    y: .value("Value", bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .top) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                            } else {
+                                PointMark(
+                                    x: .value("Index", 10),
+                                    y: .value("Value", bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .bottom) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            
+                            if let currentActiveItem, currentActiveItem.index == index {
+                                RuleMark (
+                                    x: .value("Index", currentActiveItem.index)
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: AnnotationPos) {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text("$\(currentActiveItem.amount, specifier: "%.2f")")
+                                            .font(.callout.bold())
+                                            .foregroundStyle(.black)
+                                        
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.day().month().year())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.hour().minute())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+//                                                                Text("\(currentActiveItem.date, format: .dateTime.day().minute())")
+//                                                                    .font(.title3)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .fill(.white.shadow(.drop(radius: 2
+                                                                        )))
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    .frame(height: 150)
+                    .chartXAxis(.hidden)
+                    .chartYAxis(.hidden)
+                    .chartXScale(domain: 0...10)
+                    .chartYScale(domain: 0...FindLast10Max())
+                    .chartOverlay { proxy in
+                        GeometryReader { innerProxy in
+                            Rectangle()
+                                .fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            let location = value.location
+                                            
+                                            var x = value.translation.width
+                                            var y = value.translation.height
+                                            
+                                            var horizontal: Bool = true
+                                            var vertical: Bool = true
+                                                            
+                                            if ((x < 0 && y < 0 && x < y) || (x < 0 && y > 0 && -x > y) || (x > 0 && y < 0 && x > -y) || (x > 0 && y > 0 && x > y)) && horizontal && vertical {
+                                                horizontal = true
+                                                vertical = false
+                                            } else if vertical && horizontal {
+                                                horizontal = false
+                                                vertical = true
+                                            }
+                                            
+                                            if horizontal {
+                                                
+                                                if let index_value: Int = proxy.value(atX: location.x) {
+                                                    if index_value <= 10 && index_value >= 0 {
+                                                        
+                                                        if index_value == 0 {
+                                                            AnnotationPos = .topTrailing
+                                                        } else if index_value == 10 {
+                                                            AnnotationPos = .topLeading
+                                                        } else {
+                                                            AnnotationPos = .top
+                                                        }
+                                                        
+                                                        self.currentActiveItem = (amount: bank!.amountHistoryAmount[((bank!.amountHistoryAmount.count - 11) + index_value)], date: bank!.amountHistoryDate[((bank!.amountHistoryDate.count - 11) + index_value)], index: index_value)
+                                                        
+                                                        self.plotWidth = proxy.plotSize.width
+                                                    }
+                                                }
+                                                
+                                            }
+                                        }.onEnded({ value in
+                                            self.currentActiveItem = nil
+                                        })
+                                )
+                        }
+                    }
+                    
+
+                } else {
+                    Chart {
+                        ForEach(Array(bank!.amountHistoryAmount.enumerated()), id: \.offset) { index, value in
+                            LineMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient)
+                            
+                            AreaMark(
+                                x: .value("Index", index),
+                                y: .value("Value", value)
+                            )
+                            .foregroundStyle(.mint.gradient.opacity(0.2))
+                            
+                            if bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)] > bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 2)] {
+                                
+                                PointMark(
+                                    x: .value("Index", (bank!.amountHistoryAmount.count - 1)),
+                                    y: .value("Value", bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .top) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                                
+                            } else {
+                                PointMark(
+                                    x: .value("Index", (bank!.amountHistoryAmount.count - 1)),
+                                    y: .value("Value", bank!.amountHistoryAmount[(bank!.amountHistoryAmount.count - 1)])
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: .bottom) {
+                                    Text("now")
+                                        .font(.caption2)
+                                        .foregroundStyle(.gray)
+                                }
+                            }
+                            
+                            if let currentActiveItem, currentActiveItem.index == index {
+                                RuleMark (
+                                    x: .value("Index", currentActiveItem.index)
+                                )
+                                .foregroundStyle(.green)
+                                .annotation(position: AnnotationPos) {
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text("$\(currentActiveItem.amount, specifier: "%.2f")")
+                                            .font(.callout.bold())
+                                            .foregroundStyle(.black)
+                                        
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.day().month().year())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+                                        Text("\(currentActiveItem.date, format: .dateTime.hour().minute())")
+                                            .font(.caption)
+                                            .foregroundStyle(.gray)
+                                        
+//                                                                Text("\(currentActiveItem.date, format: .dateTime.day().minute())")
+//                                                                    .font(.title3)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                            .fill(.white.shadow(.drop(radius: 2
+                                                                        )))
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                    .frame(height: 150)
+                    .chartYScale(domain: 0...FindMax())
+                    .chartXAxis(.hidden)
+                    .chartYAxis(.hidden)
+                    .chartXScale(domain: 0...(bank!.amountHistoryAmount.count - 1))
+                    .chartOverlay { proxy in
+                        GeometryReader { innerProxy in
+                            Rectangle()
+                                .fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture()
+                                        .onChanged { value in
+                                            let location = value.location
+                                            
+                                            var x = value.translation.width
+                                            var y = value.translation.height
+                                            
+                                            var horizontal: Bool = true
+                                            var vertical: Bool = true
+                                                            
+                                            if ((x < 0 && y < 0 && x < y) || (x < 0 && y > 0 && -x > y) || (x > 0 && y < 0 && x > -y) || (x > 0 && y > 0 && x > y)) && horizontal && vertical {
+                                                horizontal = true
+                                                vertical = false
+                                            } else if vertical && horizontal {
+                                                horizontal = false
+                                                vertical = true
+                                            }
+                                            
+                                            if horizontal {
+                                                
+                                                if let index_value: Int = proxy.value(atX: location.x) {
+                                                    if index_value <= (bank!.amountHistoryAmount.count - 1) && index_value >= 0 {
+                                                        
+                                                        if index_value == 0 {
+                                                            AnnotationPos = .topTrailing
+                                                        } else if index_value == (bank!.amountHistoryAmount.count - 1) {
+                                                            AnnotationPos = .topLeading
+                                                        } else {
+                                                            AnnotationPos = .top
+                                                        }
+                                                        
+                                                        self.currentActiveItem = (amount: bank!.amountHistoryAmount[index_value], date: bank!.amountHistoryDate[index_value], index: index_value)
+                                                        self.plotWidth = proxy.plotSize.width
+                                                    }
+                                                }
+                                                
+                                            }
+                                        }.onEnded({ value in
+                                            self.currentActiveItem = nil
+                                        })
+                                )
+                        }
+                    }
+                    
+                }
+                
+                
+            }
+            .padding()
+            .task {
+                if bank!.transactionHistoryAmount != [] {
+                    Task {
+                        await loadArrays()
+                    }
+                }
+                                    
+            }
+                                
+        }
+    }
     
     
     func updateFirebaseBank() async {
@@ -418,7 +693,7 @@ struct BankDetailsChild: View {
         Task {
             var user = try await Firestore.firestore().collection("ChildUsers").document(usernameChild).getDocument(as: ChildUser.self)
             
-            var tempTransactionInfo: [BankTransactionInfo] = []
+            var temp_transaction_info: [BankTransactionInfo] = []
             
             let count = user.banks[bankArray].transactionHistoryAmount.count
             
@@ -429,23 +704,46 @@ struct BankDetailsChild: View {
                 let dateReverse: [Date] = user.banks[bankArray].transactionHistoryDate.reversed()
                 let subTitleReverse: [String] = user.banks[bankArray].transactionHistorySubTitle.reversed()
                 
-                for i in 0...(nameReverse.count - 1) {
-                    tempTransactionInfo.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i], subtitle: subTitleReverse[i]))
+                if (user.banks[bankArray].transactionHistoryAmount.count) < 2 {
+                    temp_transaction_info.append(BankTransactionInfo(amount: amountReverse[0], date: dateReverse[0], name: nameReverse[0], subtitle: subTitleReverse[0]))
+                } else if (user.banks[bankArray].transactionHistoryAmount.count) == 2 {
+                    temp_transaction_info.append(BankTransactionInfo(amount: amountReverse[0], date: dateReverse[0], name: nameReverse[0], subtitle: subTitleReverse[0]))
+                    
+                    temp_transaction_info.append(BankTransactionInfo(amount: amountReverse[1], date: dateReverse[1], name: nameReverse[1], subtitle: subTitleReverse[1]))
+                } else {
+                    
+                    for i in 0...(nameReverse.count - 1) {
+                        temp_transaction_info.append(BankTransactionInfo(amount: amountReverse[i], date: dateReverse[i], name: nameReverse[i], subtitle: subTitleReverse[i]))
+                    }
+                    
                 }
                 
             }
 
-            await MainActor.run { [user, tempTransactionInfo] in
+            await MainActor.run { [user, temp_transaction_info] in
                 withAnimation {
-                    bank = user.banks[bankArray]
+                    self.bank = user.banks[bankArray]
                     
-                    if tempTransactionInfo != TransactionInfo {
-                        TransactionInfo = tempTransactionInfo
+                    if temp_transaction_info != transaction_info {
+                        self.transaction_info = temp_transaction_info
                     }
+                    
+                    
                 }
             }
+            
+            await loadArrays()
               
         }
+    }
+    
+    
+}
+
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGPoint = .zero
+
+    static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
     }
 }
 
